@@ -1,5 +1,5 @@
 from Server.MachineClient.Identification import Identification
-
+from Server.Port.GetPort import GetPort
 
 # This class is used to accept clients to the server
 # s is the socket
@@ -47,6 +47,7 @@ class Accept:
         self.creds.pop(0)
 
         if Identification(self.creds, len(self.clients)).check_remote_client()[0]:
+            port = GetPort().port
 
             self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][1] = self.c
             self.c.send(b"OK")

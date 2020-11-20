@@ -1,7 +1,6 @@
 import socket
 from Server.MachineClient.Identification import Identification
 from Server.SQL import DataBase
-from Server.Port.GetPort import GetPort
 import threading
 import time
 from Server.Connection.AcceptClients import Accept
@@ -56,6 +55,5 @@ class MachineClient:
 
 
 if __name__ == "__main__":
-
     server = MachineClient("localhost", 8080)
     server.start()
