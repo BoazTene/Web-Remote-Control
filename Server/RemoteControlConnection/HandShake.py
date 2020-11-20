@@ -14,6 +14,7 @@ class HandShake:
         self.host = host
         self.key = RandomKey().key
         self.index = 0
+        self.hand_shake = False
 
         self.getPort()
 
@@ -45,8 +46,10 @@ class HandShake:
 
     def verification(self):
         if self.clients[self.index][2][1] is not None and self.clients[self.index][2][1] is not None:
+            self.hand_shake = True
             return True
         else:
+            self.hand_shake = False
             return False
 
     def accept(self):

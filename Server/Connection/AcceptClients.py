@@ -1,5 +1,6 @@
 from Server.MachineClient.Identification import Identification
-from Server.Port.GetPort import GetPort
+from Server.RemoteControlConnection.HandShake import HandShake
+
 
 # This class is used to accept clients to the server
 # s is the socket
@@ -7,9 +8,10 @@ from Server.Port.GetPort import GetPort
 # After every accept you must update the local self.clients
 # the accept function must be the first to be called
 class Accept:
-    def __init__(self, s, clients):
+    def __init__(self, s, clients, host):
         self.s = s
         self.clients = clients
+        self.host = host
 
     # This is the main function who get the creds from the clients
     # This must be the first function to be called
@@ -47,7 +49,6 @@ class Accept:
         self.creds.pop(0)
 
         if Identification(self.creds, len(self.clients)).check_remote_client()[0]:
-            port = GetPort().port
 
             self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][1] = self.c
             self.c.send(b"OK")
@@ -55,8 +56,24 @@ class Accept:
             self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][0].send(B"Start"
                                                                                                          B"-Remote"
                                                                                                          B"-Control")
-            print(self.addr[0] + " Just connected to " + self.creds[0])
+            print(self.addr[0] + " Just connected to " + self.creds[0] + ". Starting handShake")
 
+            if HandShake(self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][0], self.c, self.clients, self.host).hand_shake:
+                print(self.addr[0] + " and " + self.creds[0] + " handShake is done successfully ")
+            else:
+                print(self.addr[0] + " and " + self.creds[0] + " handShake failed. ")
+
+                self.handshake_failed()
         else:
             self.c.send(b"UserName or password is wrong")
             self.c.close()
+
+    # this function will run if the handShake failed
+    def handshake_failed(self):
+        self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][1] = None
+
+        self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][2][0].close()
+        self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][1].pop(2)
+
+        self.clients[Identification(self.creds, len(self.clients)).check_remote_client()[1]][0].send(b"disconnected")
+
