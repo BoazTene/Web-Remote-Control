@@ -84,7 +84,6 @@ class MachineClient:
                     # c[1].send()
 
     def accept(self):
-        print("k")
         while True:
             a = Accept(self.s, self.client)
             a.accept()
