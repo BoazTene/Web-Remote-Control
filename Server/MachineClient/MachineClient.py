@@ -5,7 +5,6 @@ from Server.Port.GetPort import GetPort
 import threading
 import time
 from Server.Connection.AcceptClients import Accept
-print("da")
 
 class MachineClient:
     def __init__(self, host, port):
