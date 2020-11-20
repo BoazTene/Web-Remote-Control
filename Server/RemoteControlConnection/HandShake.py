@@ -24,6 +24,9 @@ class HandShake:
         client1.start()
         client2.start()
 
+        while not self.verification() or (not client1.is_alive() or not client2.is_alive()):
+            pass
+
     # creating the socket on a random port and sending to the
     def create_socket(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,6 +42,12 @@ class HandShake:
 
         self.index = self.clients.index([self.machine_client, self.remote_client])
         self.clients[self.index].append([self.s, None, None])
+
+    def verification(self):
+        if self.clients[self.index][2][1] is not None and self.clients[self.index][2][1] is not None:
+            return True
+        else:
+            return False
 
     def accept(self):
         self.s.settimeout(5)
