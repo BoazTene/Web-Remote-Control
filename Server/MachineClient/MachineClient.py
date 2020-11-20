@@ -5,7 +5,6 @@ from Server.Port.GetPort import GetPort
 import threading
 import time
 from Server.Connection.AcceptClients import Accept
-print("da")
 
 class MachineClient:
     def __init__(self, host, port):
@@ -84,7 +83,6 @@ class MachineClient:
                     # c[1].send()
 
     def accept(self):
-        print("k")
         while True:
             a = Accept(self.s, self.client)
             a.accept()

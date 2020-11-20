@@ -8,14 +8,12 @@ from Server.MachineClient.Identification import Identification
 # the accept function must be the first to be called
 class Accept:
     def __init__(self, s, clients):
-        print("yes")
         self.s = s
         self.clients = clients
 
     # This is the main function who get the creds from the clients
     # This must be the first function to be called
     def accept(self):
-        print("OK")
         self.s.settimeout(None)
         self.c, self.addr = self.s.accept()
 
