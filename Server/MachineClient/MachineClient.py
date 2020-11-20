@@ -1,8 +1,10 @@
 import socket
 from Server.MachineClient.Identification import Identification
 from Server.SQL import DataBase
+from Server.Port.GetPort import GetPort
 import threading
 import time
+from Server.Connection.AcceptClients import Accept
 
 
 class MachineClient:
@@ -83,36 +85,8 @@ class MachineClient:
 
     def accept(self):
         while True:
-            self.s.settimeout(None)
-            c, addr = self.s.accept()
-            try:
-                creds = c.recv(1024).decode("utf-8")
-                print(creds)
-                if not creds.split(",")[0] == "r":
-                    if not Identification(creds.split(","), len(self.client)).check():
-                        c.send(b"Your UserName is taken please change it.")
-                        c.close()
-                        continue
-                    self.client.append([c, None])
-                    c.send(b"OK")
-                    print("Connected " + addr[0])
-                else:
-                    creds = creds.split(",")
-                    creds.pop(0)
-                    if Identification(creds, len(self.client)).check_remote_client()[0]:
-
-                        self.client[Identification(creds, len(self.client)).check_remote_client()[1]][1] = c
-                        c.send(b"OK")
-
-                        self.client[Identification(creds, len(self.client)).check_remote_client()[1]][0].send(B"Start"
-                                                                                                              B"-Remote-Control")
-                        print(addr[0] + " Just connected to " + creds[0])
-                    else:
-
-                        c.send(b"UserName or password is wrong")
-            except Exception as e:
-                c.send(b"Something Went wrong...")
-                pass
+            accept = Accept(self.s, self.client)
+            self.client = accept.clients
 
     def start(self):
         self.s.bind((self.host, self.port))
