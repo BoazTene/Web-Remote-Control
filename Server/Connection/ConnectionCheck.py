@@ -18,7 +18,6 @@ class ConnectionCheck:
 
     # this is the main function
     def start(self):
-        print(self.clients)
 
         if self.check_database_update():
             return

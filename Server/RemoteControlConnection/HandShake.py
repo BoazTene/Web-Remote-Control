@@ -2,6 +2,15 @@ from Server.Random.RandomPort import GetPort
 from Server.Random.RandomKey import RandomKey
 import socket, threading
 
+# HandShake stages:
+# 1. the Server sends the clients a random port and a identity key
+# 2. the Server creates a private server on the random port
+# 3. each clients need to connect the private server and send the indentity key
+# 4. if the key is ok the client get an OK message from the server
+# 5. the client send 'r' or 'm'. 'r' -> remote_client, 'm' -> machine_client
+# 6. the client gets an Ok message from the server
+# 7. if both clients successfully completed the HandShake they will get another OK
+
 
 # This class is the handShake of the remote control
 # the change in self.clients is a list [server, machine_client, remote_client]
@@ -37,6 +46,7 @@ class HandShake:
         self.s.bind((self.host, self.port))
         self.s.listen(self.BACKLOG_QUEUE_LENGTH)
 
+
         # sending the port to the new server and the key to connect
         self.machine_client.send((str(self.port) + "!").encode("utf-8"))
         self.remote_client.send((str(self.port) + "!").encode("utf-8"))
@@ -65,6 +75,7 @@ class HandShake:
         if c.recv(1024).decode("utf-8") == self.key:
             # Key is right
             c.send(b"Ok")
+            print("HandShake succeeded with " + addr[0])
             try:
                 type = c.recv(1024).decode("utf-8")
             except socket.timeout:

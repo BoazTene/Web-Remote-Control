@@ -6,6 +6,8 @@ import threading
 from time import sleep
 import sys
 
+from RemoteControl.HandShake import HandShake
+
 
 class Client:
     def __init__(self, host, port, user_name, password):
@@ -22,6 +24,11 @@ class Client:
                 self.s.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
                 print(data, until_data)
                 return
+
+    def hand_shake(self):
+        HandShake(self.s, self.host)
+        while True:
+            pass
 
     def remote_control(self):
 
@@ -53,7 +60,8 @@ class Client:
             while True:
                 self.keep_alive("Start-Remote-Control")
                 print("Connect to remote client")
-                self.remote_control()
+                # self.remote_control()
+                self.hand_shake()
 
 
 class ScreenShot:
