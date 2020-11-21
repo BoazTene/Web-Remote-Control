@@ -18,6 +18,8 @@ class ConnectionCheck:
 
     # this is the main function
     def start(self):
+        print(self.clients)
+
         if self.check_database_update():
             return
 
@@ -79,13 +81,16 @@ class ConnectionCheck:
 
     # this function checks if the database is not updated
     def check_database_update(self):
-        if len(self.data) != len(self.clients):
-            self.db.exec("DELETE FROM machines")
-            self.db.commit()
-            self.db.close()
+        try:
+            if len(self.data) != len(self.clients):
+                self.db.exec("DELETE FROM machines")
+                self.db.commit()
+                self.db.close()
 
-            self.clients = []
+                self.clients = []
 
-            return True
-        else:
+                return True
+            else:
+                return False
+        except TypeError:
             return False

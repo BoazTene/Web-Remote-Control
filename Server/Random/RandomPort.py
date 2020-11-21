@@ -6,12 +6,12 @@ import random, socket
 class GetPort:
     def __init__(self):
         self.START_PORT = 0
-        self.END_PORT = 0
+        self.END_PORT = 1000
 
         self.port = self.random_port()
 
-        while not self.check_port():
-            self.port = self.random_port()
+        # while not self.check_port():
+        self.port = self.random_port()
 
     # checking if the port is in use
     def check_port(self):
@@ -19,10 +19,11 @@ class GetPort:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         if s.connect_ex((ADDRESS, self.port)) == 0:
-            return True
-        else:
             return False
+        else:
+            return True
 
     # generates a random port to use
     def random_port(self):
         return random.randint(self.START_PORT, self.END_PORT)
+

@@ -12,7 +12,9 @@ class HandShake:
         self.machine_client = machine_client
         self.remote_client = remote_client
         self.host = host
+
         self.key = RandomKey().key
+
         self.index = 0
         self.hand_shake = False
 
@@ -20,12 +22,13 @@ class HandShake:
 
         self.create_socket()
 
+
         client1 = threading.Thread(target=self.accept)
         client2 = threading.Thread(target=self.accept)
         client1.start()
         client2.start()
 
-        while not self.verification() or (not client1.is_alive() or not client2.is_alive()):
+        while not (not self.verification() and (not client1.is_alive() or not client2.is_alive())):
             pass
 
     # creating the socket on a random port and sending to the
