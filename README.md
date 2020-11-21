@@ -1,2 +1,1 @@
-# Web-Remote-Control
-# פלאפל בלחוח
+# Web-Remote-Control != פלאפל בלחוח
