@@ -1,11 +1,7 @@
 import socket
-import pyautogui
-from io import BytesIO
-import base64
 import threading
-from time import sleep
 import sys
-
+from Images.ScreenShot import ScreenShot
 from RemoteControl.HandShake import HandShake
 
 
@@ -26,7 +22,11 @@ class Client:
                 return
 
     def hand_shake(self):
-        HandShake(self.s, self.host)
+        hand_shake = HandShake(self.s, self.host)
+        if not hand_shake.hand_shake:
+            return
+
+        self.s = hand_shake.s
         while True:
             pass
 
@@ -62,23 +62,6 @@ class Client:
                 print("Connect to remote client")
                 # self.remote_control()
                 self.hand_shake()
-
-
-class ScreenShot:
-    def __init__(self, location=None):
-        self.location = location
-        self.img = None
-
-    def capture(self):
-        if self.location is None:
-            self.img = pyautogui.screenshot()
-        else:
-            self.img = pyautogui.screenshot(region=self.location)
-
-    def convert_to_base64(self):
-        buffered = BytesIO()
-        self.img.save(buffered, format="JPEG")
-        return base64.b64encode(buffered.getvalue())
 
 
 if __name__ == "__main__":
