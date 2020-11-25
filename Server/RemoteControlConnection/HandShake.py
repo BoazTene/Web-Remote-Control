@@ -22,6 +22,7 @@ class HandShake:
         self.remote_client = remote_client
         self.host = host
 
+
         self.key = RandomKey().key
 
         self.index = 0
@@ -39,6 +40,25 @@ class HandShake:
 
         while not (not self.verification() and (not client1.is_alive() or not client2.is_alive())):
             pass
+
+        if not self.hand_shake:
+            self.failed()
+
+    def failed(self):
+        try:
+            self.clients[self.index][2][1].send(b"NO")
+            pass
+        except Exception:
+            pass
+
+        try:
+            self.clients[self.index][2][2].send(b"NO")
+            pass
+        except Exception:
+            pass
+
+        self.clients[-1].pop(-1)
+        self.clients[-1][-1] = None
 
     # creating the socket on a random port and sending to the
     def create_socket(self):

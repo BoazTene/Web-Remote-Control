@@ -16,15 +16,21 @@ class HandShake:
 
         self.connect()
 
+
         self.send_key()
+        print("This code is strong as static and benel with ana zack eating lahoh")
 
         if self.OK():
             self.send_type()
             if self.OK():
-                self.hand_shake = True
-                print("The HandShake completed successfully")
+                if self.OK():
+                    self.hand_shake = True
+                    print("The HandShake completed successfully")
+                else:
+                    print("The HandShake failed because of the remote client.")
+                    return
             else:
-                print("Some Thing bad happened.")
+                print("Something bad happened.")
         else:
             print("The key isn't correct.")
 
@@ -35,11 +41,15 @@ class HandShake:
                 port = s.recv(1024).decode("utf-8")
                 if port != "Alive Check":
                     break
+                else:
+                    print(port)
 
         while True:
             key = s.recv(1024).decode("utf-8")
             if key != "Alive Check":
                 break
+            else:
+                print(key)
 
         return int(port.split("!")[0]), key
 
@@ -51,7 +61,8 @@ class HandShake:
     # this function send the identity key
     def send_key(self):
         self.s.send(self.key.encode("utf-8"))
-        print(self.s.recv(1024).decode("utf-8"))
+
+        # print(self.s.recv(1024).decode("utf-8"))
 
     # this function sends that this is a machine client -> m
     def send_type(self):
@@ -60,9 +71,11 @@ class HandShake:
     # This function checks if Ok arrived
     def OK(self):
         data = self.s.recv(1024).decode("utf-8")
-        if data == 'OK':
+
+        if data.lower() == 'ok':
             return True
         elif data == "Alive Check":
             return self.OK()
         else:
+            print("Failed! " + data)
             return False

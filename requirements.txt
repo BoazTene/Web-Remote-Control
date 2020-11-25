@@ -1,3 +1,4 @@
 sockets
-pyautogui
+pyautogui~=0.9.52
 pybase64
+websockets~=8.1

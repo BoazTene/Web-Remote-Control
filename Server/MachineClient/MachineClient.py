@@ -5,6 +5,7 @@ import threading
 import time
 from Server.Connection.AcceptClients import Accept
 from Server.Connection.ConnectionCheck import ConnectionCheck
+from Server.Clients_Data import Clients
 
 
 class MachineClient:
@@ -14,17 +15,21 @@ class MachineClient:
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.db = DataBase(r"C:\Users\user\Documents\RemoteControl\Server\pythonsqlite.db")
         self.data = ""
-        self.client = []
+        self.clients = Clients()
         self.remote_client = []
 
     def connection_check(self):
+        connection_check = ConnectionCheck(self.s, self.clients)
+        if connection_check.check_database_update():
+            return
         while True:
             time.sleep(2)
-            self.client = ConnectionCheck(self.s, self.client).start()
+            connection_check.connect_db()
+            self.clients = connection_check.start()
 
     def connection(self):
         while True:
-            for c in self.client:
+            for c in self.clients.data:
                 if c[1] is not  None:
                     print("connection")
                     self.s.settimeout(0.5)
@@ -36,9 +41,9 @@ class MachineClient:
 
     def accept(self):
         while True:
-            a = Accept(self.s, self.client, self.host)
+            a = Accept(self.s, self.clients, self.host)
             a.accept()
-            self.client = a.clients
+            self.clients = a.clients
 
     def start(self):
         self.s.bind((self.host, self.port))
