@@ -25,6 +25,7 @@ class Client:
         print("String HandShake")
         hand_shake = HandShake(self.s, self.host)
         print(str(hand_shake.hand_shake) + " dam")
+
         if not hand_shake.hand_shake:
             return
 
@@ -65,6 +66,8 @@ class Client:
                 # self.remote_control()
                 self.hand_shake()
                 print("disconnect")
+
+
 
 
 if __name__ == "__main__":

@@ -77,6 +77,7 @@ class Accept:
             self.c.close()
 
     def append_diff(self, handshake):
+        print(self.clients.data)
         [self.clients.data.append(item) for item in handshake.clients if item not in self.clients.data]
 
     # this function will run if the handShake failed

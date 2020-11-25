@@ -1,4 +1,5 @@
 import socket
+from RemoteControl.util import *
 
 
 # This is the HandShake client
@@ -17,20 +18,16 @@ class HandShake:
         self.connect()
 
 
-        self.send_key()
         print("This code is strong as static and benel with ana zack eating lahoh")
 
         if self.OK():
-            self.send_type()
+            print("yes yes")
             if self.OK():
-                if self.OK():
-                    self.hand_shake = True
-                    print("The HandShake completed successfully")
-                else:
-                    print("The HandShake failed because of the remote client.")
-                    return
+                self.hand_shake = True
+                print("The HandShake completed successfully")
             else:
-                print("Something bad happened.")
+                print("The HandShake failed because of the remote client.")
+                return
         else:
             print("The key isn't correct.")
 
@@ -55,14 +52,11 @@ class HandShake:
 
     # This function connects to the server
     def connect(self):
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.connect((self.host, self.port))
+        self.s = socket.socket(socket.AF_INET, # Internet
+                         socket.SOCK_DGRAM)
+        self.s.sendto(self.key.encode("utf-8"), (self.host, self.port))
+        print("laflaf")
 
-    # this function send the identity key
-    def send_key(self):
-        self.s.send(self.key.encode("utf-8"))
-
-        # print(self.s.recv(1024).decode("utf-8"))
 
     # this function sends that this is a machine client -> m
     def send_type(self):
@@ -70,8 +64,13 @@ class HandShake:
 
     # This function checks if Ok arrived
     def OK(self):
-        data = self.s.recv(1024).decode("utf-8")
+        try:
+            data, addr = self.s.recvfrom(1024)
+        except Exception:
+            return False
 
+        data = data.decode('utf-8')
+        print(data)
         if data.lower() == 'ok':
             return True
         elif data == "Alive Check":

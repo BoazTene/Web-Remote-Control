@@ -1,6 +1,8 @@
 from Server.Random.RandomPort import GetPort
 from Server.Random.RandomKey import RandomKey
 import socket, threading
+from Server.RemoteControlConnection.util import *
+from Server.RemoteControlConnection.Time import CountTime
 
 # HandShake stages:
 # 1. the Server sends the clients a random port and a identity key
@@ -21,7 +23,8 @@ class HandShake:
         self.machine_client = machine_client
         self.remote_client = remote_client
         self.host = host
-
+        self.address = []
+        self.TIMEOUT = 5
 
         self.key = RandomKey().key
 
@@ -32,13 +35,12 @@ class HandShake:
 
         self.create_socket()
 
+        accept = threading.Thread(target=self.accept)
+        accept.start()
 
-        client1 = threading.Thread(target=self.accept)
-        client2 = threading.Thread(target=self.accept)
-        client1.start()
-        client2.start()
+        time = CountTime()
 
-        while not (not self.verification() and (not client1.is_alive() or not client2.is_alive())):
+        while time.get_pass_time() < self.TIMEOUT:
             pass
 
         if not self.hand_shake:
@@ -49,22 +51,31 @@ class HandShake:
             self.clients[self.index][2][1].send(b"NO")
             pass
         except Exception:
-            pass
+            try:
+                self.s.sendto(b"NO", self.address[0])
+            except Exception:
+                pass
 
         try:
             self.clients[self.index][2][2].send(b"NO")
             pass
         except Exception:
-            pass
+            try:
+                self.s.sendto(b"NO", self.address[1])
+            except Exception:
+                pass
 
-        self.clients[-1].pop(-1)
-        self.clients[-1][-1] = None
+
+        self.s.close()
 
     # creating the socket on a random port and sending to the
     def create_socket(self):
-        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        print("lahoh")
+
+        self.s = socket.socket(socket.AF_INET, # Internet
+                         socket.SOCK_DGRAM) # UDP
+
         self.s.bind((self.host, self.port))
-        self.s.listen(self.BACKLOG_QUEUE_LENGTH)
 
 
         # sending the port to the new server and the key to connect
@@ -73,46 +84,34 @@ class HandShake:
 
         self.machine_client.send(self.key.encode("utf-8"))
         self.remote_client.send(self.key.encode("utf-8"))
-
-        self.index = self.clients.index([self.machine_client, self.remote_client])
-        self.clients[self.index].append([self.s, None, None])
-
-    def verification(self):
-        if self.clients[self.index][2][1] is not None and self.clients[self.index][2][1] is not None:
-            self.hand_shake = True
-            return True
-        else:
-            self.hand_shake = False
-            return False
+        print("lahoh2")
+        # self.index = self.clients.index([self.machine_client, self.remote_client])
+        # self.clients[self.index].append([self.s, None, None])
 
     def accept(self):
-        self.s.settimeout(5)
-        try:
-            c, addr = self.s.accept()
-        except socket.timeout:
-            return
+        data, addr = self.s.recvfrom(1024)
 
-        if c.recv(1024).decode("utf-8") == self.key:
-            # Key is right
-            c.send(b"Ok")
-            print("HandShake succeeded with " + addr[0])
+        if data.decode('utf-8') == self.key:
+            self.address.append(addr)
+            self.s.sendto(b"OK", addr)
+        else:
+            self.s.sendto(b"NO", addr)
+
+        if len(self.address) >= 2:
             try:
-                type = c.recv(1024).decode("utf-8")
-            except socket.timeout:
+                self.s.sendto(b"OK", self.address[0])
+                self.s.sendto(b"OK", self.address[-1])
+            except Exception:
                 return
 
-            # r is stand for remote client and m is stand for machine client
-            if type == 'r':
-                self.clients[self.index][2][1] = c
-            elif type == 'm':
-                self.clients[self.index][2][2] = c
+            self.s.sendto(addr_to_msg(self.address[1]), self.address[0])
+            self.s.sendto(addr_to_msg(self.address[0]), self.address[1])
+            self.address.pop(1)
+            self.address.pop(0)
 
-            # the handShake is successfully done
-            c.send(b"OK")
-        else:
-            # handShake failed
-            c.send(b"NO")
-            c.close()
+            self.s.close()
+
+            self.hand_shake = True
 
     def getPort(self):
         self.port = GetPort().port
