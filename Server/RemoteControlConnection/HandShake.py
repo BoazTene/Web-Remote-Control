@@ -70,8 +70,6 @@ class HandShake:
 
     # creating the socket on a random port and sending to the
     def create_socket(self):
-        print("lahoh")
-
         self.s = socket.socket(socket.AF_INET, # Internet
                          socket.SOCK_DGRAM) # UDP
 
@@ -79,39 +77,48 @@ class HandShake:
 
 
         # sending the port to the new server and the key to connect
-        self.machine_client.send((str(self.port) + "!").encode("utf-8"))
-        self.remote_client.send((str(self.port) + "!").encode("utf-8"))
+        self.machine_client.send((str(self.port) + "!").encode("utf-8") + self.key.encode("utf-8"))
+        self.remote_client.send((str(self.port) + "!").encode("utf-8") + self.key.encode("utf-8"))
 
-        self.machine_client.send(self.key.encode("utf-8"))
-        self.remote_client.send(self.key.encode("utf-8"))
-        print("lahoh2")
         # self.index = self.clients.index([self.machine_client, self.remote_client])
         # self.clients[self.index].append([self.s, None, None])
 
     def accept(self):
-        data, addr = self.s.recvfrom(1024)
+        while True:
+            data, addr = self.s.recvfrom(1024)
+            print(data, addr)
+            if data.decode('utf-8') == self.key:
+                self.address.append(addr)
+                self.s.sendto(b"OK", addr)
+            else:
+                print("key:", self.key)
+                print("data:", data)
+                self.s.sendto(b"NO", addr)
 
-        if data.decode('utf-8') == self.key:
-            self.address.append(addr)
-            self.s.sendto(b"OK", addr)
-        else:
-            self.s.sendto(b"NO", addr)
+            if len(self.address) >= 2:
+                try:
+                    self.s.sendto(b"OK", self.address[0])
+                    self.s.sendto(b"OK", self.address[-1])
+                except Exception:
+                    return
 
-        if len(self.address) >= 2:
-            try:
-                self.s.sendto(b"OK", self.address[0])
-                self.s.sendto(b"OK", self.address[-1])
-            except Exception:
+                self.s.sendto(addr_to_msg(self.address[1]), self.address[0])
+                self.s.sendto(addr_to_msg(self.address[0]), self.address[1])
+
+                try:
+                    self.s.sendto(b"OK", self.address[0])
+                    self.s.sendto(b"OK", self.address[-1])
+                except Exception:
+                    return
+
+                self.address.pop(1)
+                self.address.pop(0)
+
+                self.s.close()
+
+                self.hand_shake = True
+
                 return
-
-            self.s.sendto(addr_to_msg(self.address[1]), self.address[0])
-            self.s.sendto(addr_to_msg(self.address[0]), self.address[1])
-            self.address.pop(1)
-            self.address.pop(0)
-
-            self.s.close()
-
-            self.hand_shake = True
 
     def getPort(self):
         self.port = GetPort().port

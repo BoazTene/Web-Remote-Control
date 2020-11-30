@@ -1,6 +1,7 @@
 from Server.MachineClient.Identification import Identification
 from Server.RemoteControlConnection.HandShake import HandShake
-
+import threading
+from Server.SQL import DataBase
 
 # This class is used to accept clients to the server
 # s is the socket
@@ -58,35 +59,43 @@ class Accept:
                                                                                                          B"-Control")
             print(self.addr[0] + " Just connected to " + self.creds[0] + ". Starting handShake")
 
-            clients_copy = self.clients.data.copy() # This line is the bug
-
-            self.clients.data.pop(Identification(self.creds, len(self.clients.data)).check_remote_client()[1])
-
-
-            handshake = HandShake(clients_copy[Identification(self.creds, len(clients_copy)).check_remote_client()[1]][0], self.c, clients_copy, self.host)
-            if handshake.hand_shake:
-                print(self.addr[0] + " and " + self.creds[0] + " handShake is done successfully ")
-            else:
-                print(self.addr[0] + " and " + self.creds[0] + " handShake failed. ")
-                
-                self.append_diff(handshake)
-
-                self.handshake_failed(clients_copy)
+            threading.Thread(target=self.hand_shake).start()
         else:
             self.c.send(b"UserName or password is wrong")
             self.c.close()
 
+    def hand_shake(self):
+        clients_copy = self.clients.data.copy()  # This line is the bug
+
+        self.clients.data.pop(Identification(self.creds, len(self.clients.data)).check_remote_client()[1])
+
+        handshake = HandShake(clients_copy[Identification(self.creds, len(clients_copy)).check_remote_client()[1]][0],
+                              self.c, clients_copy, self.host)
+        if handshake.hand_shake:
+            print(self.addr[0] + " and " + self.creds[0] + " handShake is done successfully ")
+
+            # delete the userName from the database
+            db = DataBase(r"C:\Users\user\Documents\RemoteControl\Server\pythonsqlite.db")
+            db.exec("DELETE FROM machines WHERE client = '%s'" % len(self.clients.data))
+            db.commit()
+            db.close()
+        else:
+            print(self.addr[0] + " and " + self.creds[0] + " handShake failed. ")
+
+            self.append_diff(handshake)
+
+            self.handshake_failed(clients_copy)
+
     def append_diff(self, handshake):
-        print(self.clients.data)
         [self.clients.data.append(item) for item in handshake.clients if item not in self.clients.data]
 
     # this function will run if the handShake failed
     def handshake_failed(self, clients_copy):
 
-        self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][1] = None
-
-        self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][2][0].close()
-        self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][1].pop(2)
+        # self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][1] = None
+        #
+        # self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][2][0].close()
+        # self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][1].pop(2)
 
         self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][0].send(b"disconnected")
 

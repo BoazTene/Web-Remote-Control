@@ -1,10 +1,12 @@
 import socket
 from RemoteControl.util import *
+import time
 
 
 # This is the HandShake client
-# The Socket object is saved after the HandShake in self.s
+# The Socket object is saved after the HandShake in self.s, the addr save in self.addr
 # If the HandShake completed successfully the self.hand_shake value is True else its value is False
+
 class HandShake:
     def __init__(self, s, host):
         self.host = host
@@ -17,14 +19,19 @@ class HandShake:
 
         self.connect()
 
-
         print("This code is strong as static and benel with ana zack eating lahoh")
 
         if self.OK():
             print("yes yes")
             if self.OK():
-                self.hand_shake = True
-                print("The HandShake completed successfully")
+                self.get_client()
+                if self.OK():
+                    self.hand_shake = True
+                    print("The HandShake completed successfully")
+                    return
+                else:
+                    print("Something bad happened..")
+                    return
             else:
                 print("The HandShake failed because of the remote client.")
                 return
@@ -36,19 +43,13 @@ class HandShake:
     def get_port_and_key(s):
         while True:
                 port = s.recv(1024).decode("utf-8")
+                print(port)
                 if port != "Alive Check":
                     break
                 else:
                     print(port)
 
-        while True:
-            key = s.recv(1024).decode("utf-8")
-            if key != "Alive Check":
-                break
-            else:
-                print(key)
-
-        return int(port.split("!")[0]), key
+        return int(port.split("!")[0]), port.split("!")[1]
 
     # This function connects to the server
     def connect(self):
@@ -57,6 +58,11 @@ class HandShake:
         self.s.sendto(self.key.encode("utf-8"), (self.host, self.port))
         print("laflaf")
 
+
+    def get_client(self):
+        data, addr = self.s.recvfrom(1024)
+        print(data)
+        self.addr = msg_to_addr(data)
 
     # this function sends that this is a machine client -> m
     def send_type(self):

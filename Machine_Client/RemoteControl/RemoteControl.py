@@ -1,11 +1,12 @@
 from Images.ScreenShot import ScreenShot
-from Images.ConvrtToBase64 import ConvertImageToBase64
+from Images.ConvertToBase64 import ConvertImageToBase64
 
 
 # This class handles the Remote Control
 class RemoteControl:
-    def __init__(self, s):
+    def __init__(self, s, addr):
         self.s = s
+        self.addr = addr
 
     # this function sends a screenshot to the server
     def send_image(self):
@@ -13,8 +14,16 @@ class RemoteControl:
         screen_shot.capture()
         screen_shot.save()
         image = ConvertImageToBase64(screen_shot.buffered).convert()
+        split_image = ConvertImageToBase64.split_image(image, int(len(image)/700))
 
-        self.s.send(image)
+        # self.s.sendto(b"<start>", self.addr)
+        #
+        # for i in split_image:
+        #     self.s.sendto(i, self.addr)
+        #
+        # self.s.sendto(b"<start>", self.addr)
+
+        print("Image")
 
     # This function exec an command
     # move mouse, click, keyboard press

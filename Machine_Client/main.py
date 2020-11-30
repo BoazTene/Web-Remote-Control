@@ -3,10 +3,13 @@ import threading
 import sys
 from Images.ScreenShot import ScreenShot
 from RemoteControl.HandShake import HandShake
+from RemoteControl.RemoteControl import RemoteControl
+from md5 import Md5
 
 
 class Client:
     def __init__(self, host, port, user_name, password):
+        self.remote_addr = None
         self.host = host
         self.port = port
         self.cred = [user_name, password]
@@ -27,35 +30,26 @@ class Client:
         print(str(hand_shake.hand_shake) + " dam")
 
         if not hand_shake.hand_shake:
-            return
+            return False
 
         self.s = hand_shake.s
-        while True:
-            pass
+        self.remote_addr = hand_shake.addr
+
+        return True
 
     def remote_control(self):
-
-        def check_connection():
-            while True:
-                data = self.s.recv(1024).decode("utf-8")
-                if data == "disconnected":
-                    print("disconnected")
-                    return
-
-        conn_check = threading.Thread(target=check_connection())
-        conn_check.start()
-
+        remote_control = RemoteControl(self.s, self.remote_addr)
         while True:
-            if not conn_check.is_alive():
-                return
-            screen_shot = ScreenShot()
-            screen_shot.capture()
-            self.s.send(screen_shot.convert_to_base64())
+            data, addr = self.s.recvfrom(1024)
+            print(data.decode("utf-8"))
+            break
+            # remote_control.send_image()
+            pass
 
     def connect(self):
         self.s.connect((self.host, self.port))
         print(self.s.gettimeout())
-        self.s.send((self.cred[0] + "," + self.cred[1]).encode("utf-8"))
+        self.s.send(Md5(self.cred[0]).encrypt().encode("utf-8") + b"," + Md5(self.cred[1]).encrypt().encode("utf-8"))
 
         data = self.s.recv(1024).decode("utf-8")
         print(data)
@@ -64,10 +58,11 @@ class Client:
                 self.keep_alive("Start-Remote-Control")
                 print("Connect to remote client")
                 # self.remote_control()
-                self.hand_shake()
-                print("disconnect")
+                if not self.hand_shake():
+                    print("disconnect")
+                    continue
 
-
+                self.remote_control()
 
 
 if __name__ == "__main__":
