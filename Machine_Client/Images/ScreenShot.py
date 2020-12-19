@@ -19,4 +19,4 @@ class ScreenShot:
 
     # saves it to self.buffered
     def save(self):
-        self.img.save(self.buffered, format="JPEG")
+        self.img.save(self.buffered, format="JPEG",optimize=True) # , quality=10

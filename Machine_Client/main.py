@@ -3,7 +3,7 @@ import threading
 import sys
 from Images.ScreenShot import ScreenShot
 from RemoteControl.HandShake import HandShake
-from RemoteControl.RemoteControl import RemoteControl
+# from RemoteControl.RemoteControl import RemoteControl
 from md5 import Md5
 
 
@@ -29,26 +29,28 @@ class Client:
         hand_shake = HandShake(self.s, self.host)
         print(str(hand_shake.hand_shake) + " dam")
 
+        self.s.close()
+
         if not hand_shake.hand_shake:
             return False
 
         self.s = hand_shake.s
-        self.remote_addr = hand_shake.addr
+
+        # self.remote_addr = hand_shake.addr
 
         return True
 
-    def remote_control(self):
-        remote_control = RemoteControl(self.s, self.remote_addr)
-        while True:
-            data, addr = self.s.recvfrom(1024)
-            print(data.decode("utf-8"))
-            break
-            # remote_control.send_image()
-            pass
+    # def remote_control(self):
+    #     remote_control = RemoteControl(self.s, self.remote_addr)
+    #
+    #     print("addr: %s" % str(self.remote_addr))
+    #     while True:
+    #         remote_control.send_image()
 
     def connect(self):
         self.s.connect((self.host, self.port))
         print(self.s.gettimeout())
+        # print(Md5(self.cred[0]).encrypt().encode("utf-8") + b"," + Md5(self.cred[1]).encrypt().encode("utf-8"))
         self.s.send(Md5(self.cred[0]).encrypt().encode("utf-8") + b"," + Md5(self.cred[1]).encrypt().encode("utf-8"))
 
         data = self.s.recv(1024).decode("utf-8")

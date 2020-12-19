@@ -21,11 +21,10 @@ class HandShake:
 
         print("This code is strong as static and benel with ana zack eating lahoh")
 
-        if self.OK():
+        if self.OK('ok'):
             print("yes yes")
-            if self.OK():
-                self.get_client()
-                if self.OK():
+            if self.OK('ok'):
+                if self.get_client() or self.OK('ok, client'):
                     self.hand_shake = True
                     print("The HandShake completed successfully")
                     return
@@ -61,15 +60,22 @@ class HandShake:
 
     def get_client(self):
         data, addr = self.s.recvfrom(1024)
-        print(data)
-        self.addr = msg_to_addr(data)
+        if data == b'Ok, Client':
+            data, addr = self.s.recvfrom(1024)
+            print(data)
+            self.addr = msg_to_addr(data)
+            return True
+        else:
+            print(data)
+            self.addr = msg_to_addr(data)
+            return False
 
     # this function sends that this is a machine client -> m
     def send_type(self):
         self.s.send(b"m")
 
     # This function checks if Ok arrived
-    def OK(self):
+    def OK(self, recv):
         try:
             data, addr = self.s.recvfrom(1024)
         except Exception:
@@ -77,10 +83,10 @@ class HandShake:
 
         data = data.decode('utf-8')
         print(data)
-        if data.lower() == 'ok':
+        if data.lower() == recv:
             return True
         elif data == "Alive Check":
-            return self.OK()
+            return self.OK(recv)
         else:
             print("Failed! " + data)
             return False

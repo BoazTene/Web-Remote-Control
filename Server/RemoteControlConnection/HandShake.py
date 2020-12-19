@@ -78,7 +78,7 @@ class HandShake:
 
         # sending the port to the new server and the key to connect
         self.machine_client.send((str(self.port) + "!").encode("utf-8") + self.key.encode("utf-8"))
-        self.remote_client.send((str(self.port) + "!").encode("utf-8") + self.key.encode("utf-8"))
+        self.remote_client.send(("!" + str(self.port) + "!").encode("utf-8") + self.key.encode("utf-8"))
 
         # self.index = self.clients.index([self.machine_client, self.remote_client])
         # self.clients[self.index].append([self.s, None, None])
@@ -105,14 +105,10 @@ class HandShake:
                 self.s.sendto(addr_to_msg(self.address[1]), self.address[0])
                 self.s.sendto(addr_to_msg(self.address[0]), self.address[1])
 
-                try:
-                    self.s.sendto(b"OK", self.address[0])
-                    self.s.sendto(b"OK", self.address[-1])
-                except Exception:
-                    return
-
                 self.address.pop(1)
                 self.address.pop(0)
+
+
 
                 self.s.close()
 

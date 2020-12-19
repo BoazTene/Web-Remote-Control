@@ -43,6 +43,7 @@ class ConnectionCheck:
                 self.clients.data[int(row[2])][0].send(b"Alive Check")
             except (ConnectionResetError, ConnectionAbortedError, ConnectionError, ConnectionRefusedError):
                 self.dead_machine_clients.append(row[0])
+            except IndexError:
                 pass
 
             try:

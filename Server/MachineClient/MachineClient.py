@@ -54,11 +54,11 @@ class MachineClient:
 
         conn_check = threading.Thread(target=self.connection_check)
         conn_check.start()
-
+    
         # connection = threading.Thread(target=self.connection)
         # connection.start()
 
 
 if __name__ == "__main__":
-    server = MachineClient("localhost", 8080)
+    server = MachineClient("0.0.0.0", 8080)
     server.start()

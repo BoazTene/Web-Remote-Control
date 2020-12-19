@@ -3,6 +3,7 @@ from Server.RemoteControlConnection.HandShake import HandShake
 import threading
 from Server.SQL import DataBase
 
+
 # This class is used to accept clients to the server
 # s is the socket
 # clients is a list of all the clients
@@ -19,7 +20,7 @@ class Accept:
     def accept(self):
         self.s.settimeout(None)
         self.c, self.addr = self.s.accept()
-
+        print(self.addr[0])
         try:
             self.creds = self.c.recv(1024).decode("utf-8")
             print(self.creds)
@@ -79,10 +80,11 @@ class Accept:
             db.exec("DELETE FROM machines WHERE client = '%s'" % len(self.clients.data))
             db.commit()
             db.close()
+
         else:
             print(self.addr[0] + " and " + self.creds[0] + " handShake failed. ")
 
-            self.append_diff(handshake)
+            # self.append_diff(handshake)
 
             self.handshake_failed(clients_copy)
 
@@ -91,11 +93,5 @@ class Accept:
 
     # this function will run if the handShake failed
     def handshake_failed(self, clients_copy):
-
-        # self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][1] = None
-        #
-        # self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][2][0].close()
-        # self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][1].pop(2)
-
         self.clients.data[Identification(self.creds, len(self.clients.data)).check_remote_client()[1]][0].send(b"disconnected")
 
