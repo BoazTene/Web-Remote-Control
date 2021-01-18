@@ -1,6 +1,7 @@
 import struct
 from collections import namedtuple
 
+
 def addr_from_args(args, host='127.0.0.1', port=9999):
     if len(args) >= 3:
         host, port = args[1], int(args[2])

@@ -1,9 +1,9 @@
 from http.server import HTTPServer
-from Handler.Handler import Handler
+from .Handler.Handler import Handler
 
 
-def run(server_class=HTTPServer, handler_class=Handler, port=8080):
-    server_address = ('', port)
+def run(port=8080, server_class=HTTPServer, handler_class=Handler):
+    server_address = ('127.0.0.1', port)
     httpd = server_class(server_address, handler_class)
 
     try:
@@ -12,6 +12,3 @@ def run(server_class=HTTPServer, handler_class=Handler, port=8080):
         pass
     httpd.server_close()
 
-
-if __name__ == '__main__':
-    run(port=5000)

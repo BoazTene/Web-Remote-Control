@@ -2,7 +2,7 @@ import os
 import shutil
 import urllib.parse
 from http import HTTPStatus
-from Handler.GET.GET_RemoteControl.Path import Path
+from .Path import Path
 
 
 class GET:

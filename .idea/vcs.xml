@@ -2,7 +2,9 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Server/HTTP_Server/openssl" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/python-nat-hole-punching" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/remote-machine-client" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/remote-machine-client/wasm/site/Server/openssl" vcs="Git" />
   </component>
 </project>

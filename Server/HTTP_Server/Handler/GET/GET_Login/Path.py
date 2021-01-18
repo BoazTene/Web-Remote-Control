@@ -6,6 +6,7 @@ import posixpath
 
 class Path:
     def __init__(self, path, root_directory=""):
+
         self.extensions_map = mimetypes.types_map.copy()
         self.extensions_map.update({
             '': 'application/octet-stream',  # Default
@@ -25,14 +26,16 @@ class Path:
             self.path = self.translate_path(self.path)
         else:
             self.path = os.path.relpath(self.root_directory + self.path)
+
             self.path = self.translate_path(self.path)
 
+
     def root_dir(self):
-        if str(self.remove_parameters()) == '/':
+        if str(self.remove_parameters()) == '/Login':
             try:
-                self.path = '/index.html?' +  self.path.split("?", 1)[1]
+                self.path = '/Login/index.html?' +  self.path.split("?", 1)[1]
             except IndexError:
-                self.path = '/index.html'
+                self.path = '/Login/index.html'
 
     def remove_parameters(self):
         return self.path.split("?", 1)[0].split("#", 1)[0]

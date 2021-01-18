@@ -1,5 +1,5 @@
 from io import BytesIO
-import pyautogui
+import d3dshot
 
 
 # This class takes a screenshot
@@ -9,14 +9,27 @@ class ScreenShot:
         self.location = location
         self.img = None
         self.buffered = BytesIO()
+        self.d = d3dshot.create()
 
     # capture the image
-    def capture(self):
-        if self.location is None:
-            self.img = pyautogui.screenshot()
-        else:
-            self.img = pyautogui.screenshot(region=self.location)
+    def start_capture(self):
+        self.d.capture(target_fps=80)
+
+    # return Pil of the last image
+    def get_last_image(self):
+        return self.d.get_latest_frame()
+
+    # this stop the screenshot capture
+    def stop(self):
+        self.d.stop()
 
     # saves it to self.buffered
     def save(self):
-        self.img.save(self.buffered, format="JPEG",optimize=True) # , quality=10
+        try:
+            self.buffered = BytesIO()
+            self.d.get_latest_frame().save(self.buffered, format="JPEG", quality=30) # , quality=10
+        except AttributeError:
+            print("NoneType error")
+
+
+

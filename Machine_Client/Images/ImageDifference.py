@@ -30,16 +30,17 @@ class ImageDifferences:
                 except IndexError:
                     self.result.append([self.new_image_list[i], i])
         if len(self.new_image_list) > len(self.old_image_list):
-            self.result.append(self.new_image_list[(-(len(self.new_image_list)-len(tmp))):])
+            # print(self.new_image_list[(-(len(self.new_image_list)-len(tmp))):])
+            self.result.append("".join(self.new_image_list[(-(len(self.new_image_list)-len(tmp))):]))
 
         elif len(self.new_image_list) < len(self.old_image_list):
             self.result.append(['',  len(self.new_image_list) - (len(self.old_image_list) - len(self.new_image_list)) + 1])
 
-        print(len(self.result))
+        # print(len(self.result))
 
 
-image_diffrences = ImageDifferences("abcd", "abbb")
+# image_diffrences = ImageDifferences("1234", "4334")
 
-image_diffrences.sub()
-
-print(str(image_diffrences))
+# image_diffrences.sub()
+#
+# print(str(image_diffrences))

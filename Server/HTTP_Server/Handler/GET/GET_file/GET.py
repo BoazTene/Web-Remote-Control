@@ -3,8 +3,8 @@ import os
 from http import HTTPStatus
 import shutil
 import urllib.parse
-from Handler.GET.GET_file.Permission import Permission
-from Handler.GET.GET_file.Path import Path
+from .Permission import Permission
+from .Path import Path
 
 
 class GET:
@@ -15,9 +15,9 @@ class GET:
         self.wfile = handler.wfile
 
         try:
-            self.path = Path(path, root_directory="..")
-
+            self.path = Path(path, root_directory="../../remote-machine-client/wasm/site")
             f = self.send_head(self.path)
+
             if f:
                 try:
                     self.copyfile(f, self.wfile)

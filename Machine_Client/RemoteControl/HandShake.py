@@ -1,5 +1,5 @@
 import socket
-from RemoteControl.util import *
+from .util import *
 import time
 
 

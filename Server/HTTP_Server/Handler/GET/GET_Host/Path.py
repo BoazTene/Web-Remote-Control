@@ -28,11 +28,12 @@ class Path:
             self.path = self.translate_path(self.path)
 
     def root_dir(self):
-        if str(self.remove_parameters()) == '/':
+        if str(self.remove_parameters()) == '/Host':
             try:
-                self.path = '/index.html?' +  self.path.split("?", 1)[1]
+                self.path = '/Host/index.html?' +  self.path.split("?", 1)[1]
             except IndexError:
-                self.path = '/index.html'
+                self.path = '/Host/index.html'
+
 
     def remove_parameters(self):
         return self.path.split("?", 1)[0].split("#", 1)[0]

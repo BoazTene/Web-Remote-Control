@@ -19,9 +19,8 @@ class Path:
 
         self.root_directory = root_directory #"../Login"
 
-
         if self.path.split("/")[1] == "node_modules":
-            self.path = "../" + self.path
+            self.path = "../../remote-machine-client/wasm/site/" + self.path
             self.path = self.translate_path(self.path)
         else:
             self.path = os.path.relpath(self.root_directory + self.path)

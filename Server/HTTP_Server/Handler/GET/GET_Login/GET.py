@@ -2,8 +2,8 @@ import email.utils
 import os
 from http import HTTPStatus
 import urllib.parse
-from Handler.GET.GET_Login.Permission import Permission
-from Handler.GET.GET_Login.Path import Path
+from .Permission import Permission
+from .Path import Path
 import shutil
 
 

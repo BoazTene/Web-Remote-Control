@@ -1,10 +1,10 @@
 import socket
 import threading
 import sys
-from Images.ScreenShot import ScreenShot
-from RemoteControl.HandShake import HandShake
-# from RemoteControl.RemoteControl import RemoteControl
-from md5 import Md5
+from .Images.ScreenShot import ScreenShot
+from .RemoteControl.HandShake import HandShake
+from .RemoteControl.RemoteControl import RemoteControl
+from .md5 import Md5
 
 
 class Client:
@@ -28,7 +28,7 @@ class Client:
         print("String HandShake")
         hand_shake = HandShake(self.s, self.host)
         print(str(hand_shake.hand_shake) + " dam")
-
+        self.remote_addr = hand_shake.addr
         self.s.close()
 
         if not hand_shake.hand_shake:
@@ -40,18 +40,24 @@ class Client:
 
         return True
 
-    # def remote_control(self):
-    #     remote_control = RemoteControl(self.s, self.remote_addr)
-    #
-    #     print("addr: %s" % str(self.remote_addr))
-    #     while True:
-    #         remote_control.send_image()
+    def remote_control(self):
+        remote_control = RemoteControl(self.s, self.remote_addr)
+
+        print("addr: %s" % str(self.remote_addr))
+        remote_control.send_image()
+        # exit(0)
+        while True:
+            remote_control.send_image()
+
+        remote_control.screen_shot.stop()
 
     def connect(self):
         self.s.connect((self.host, self.port))
         print(self.s.gettimeout())
         # print(Md5(self.cred[0]).encrypt().encode("utf-8") + b"," + Md5(self.cred[1]).encrypt().encode("utf-8"))
-        self.s.send(Md5(self.cred[0]).encrypt().encode("utf-8") + b"," + Md5(self.cred[1]).encrypt().encode("utf-8"))
+
+        # self.s.send(Md5(self.cred[0]).encrypt().encode("utf-8") + b"," + Md5(self.cred[1]).encrypt().encode("utf-8"))
+        self.s.send(self.cred[0].encode("utf-8") + b"," + self.cred[1].encode("utf-8"))
 
         data = self.s.recv(1024).decode("utf-8")
         print(data)
@@ -67,6 +73,6 @@ class Client:
                 self.remote_control()
 
 
-if __name__ == "__main__":
-    client = Client("localhost", 8080, sys.argv[1], "1234")
-    client.connect()
+# if __name__ == "__main__":
+#     client = Client("localhost", 8080, sys.argv[1], "1234")
+#     client.connect()

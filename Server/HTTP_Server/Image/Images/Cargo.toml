@@ -7,7 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-winapi = "0.3.9"
+scrap = "0.5"
+png = "0.16.8"
 
-[target.'cfg(windows)'.dependencies]
-winapi = { version = "0.3", features = ["winuser"] }
+# [dependencies.png]
+# version="0.16.8"
+# features=["HasParameters"]

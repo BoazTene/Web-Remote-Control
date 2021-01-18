@@ -1,8 +1,14 @@
+import os
+import sys
+
+sys.path.append(os.getcwd().rsplit('\\', 2)[0])
+
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 import socket
 import threading
 from RemoteMachine import HandShake
+from Machine_Client.main import Client as Register
 from Image.GetImage import GetImage
 
 
@@ -44,10 +50,21 @@ class Server:
         @app.route("/image")
         @cross_origin()
         def get_image():
-            if self.get_image is not None:
-                del self.get_image.images[:-1]
-                return self.get_image.images[0]
-            return "Error: Permission denied"
+            # print(len(self.get_image.images))
+            return self.get_image.images
+            # return ""
+            # return "Error: Permission denied"
+
+        @app.route("/register")
+        @cross_origin()
+        def register():
+            username = request.args.get('username')
+            password = request.args.get('password')
+            print(password, username)
+            host = Register("localhost", 8080, username, password)
+            self.register_thread = threading.Thread(target=host.connect())
+            self.register_thread.start()
+            return "True"
 
         @app.route("/login")
         @cross_origin()
@@ -80,6 +97,6 @@ class Server:
 
 
 if __name__ == "__main__":
-    server = Server(1234)
+    server = Server(int(sys.argv[1]))
     while True:
         pass

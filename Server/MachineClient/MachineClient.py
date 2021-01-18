@@ -6,6 +6,7 @@ import time
 from Server.Connection.AcceptClients import Accept
 from Server.Connection.ConnectionCheck import ConnectionCheck
 from Server.Clients_Data import Clients
+from Server.HTTP_Server.Server import run
 
 
 class MachineClient:
@@ -48,6 +49,9 @@ class MachineClient:
     def start(self):
         self.s.bind((self.host, self.port))
         self.s.listen(5)
+
+        web = threading.Thread(target=run, args=(5000,))
+        web.start()
 
         accept = threading.Thread(target=self.accept)
         accept.start()

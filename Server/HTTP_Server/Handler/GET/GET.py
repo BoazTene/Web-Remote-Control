@@ -1,7 +1,9 @@
-from Handler.GET.SQL import DataBase
-from Handler.GET.GET_Login.GET import GET as GET_Login
-from Handler.GET.GET_RemoteControl.GET import GET as remoteControl
-from Handler.GET.GET_file.GET import GET as GET_file
+from .SQL import DataBase
+from .GET_Login.GET import GET as GET_Login
+from .GET_RemoteControl.GET import GET as remoteControl
+from .GET_file.GET import GET as GET_file
+from .GET_Main.GET import GET as GET_Main
+from .GET_Host.GET import GET as GET_Host
 
 
 class GET:
@@ -10,22 +12,28 @@ class GET:
         self.path = path
         self.root_directory = root_directory
         try:
+            if self.path.split("?")[0].split("#")[0] == "/Login":
+                GET_Login(handler, path, '../../remote-machine-client/wasm/site')
+                return
+            if self.path.split("?")[0].split("#")[0] == "/Host":
+                GET_Host(handler, path, '../../remote-machine-client/wasm/site')
+                return
             if list(self.path.split("/", 1)[1])[0] == "?" or list(self.path.split("/", 1)[1])[0] == "#":
                 access = Access(self.handler)
                 if access.check():
                     # remote control the user is authorized
-                    remoteControl(handler, path, "../RemoteControl")
+                    remoteControl(handler, path, "../../remote-machine-client/wasm/site/RemoteControl")
                     return
                 else:
                     # Login the user is unauthorized
-                    GET_Login(handler, path, root_directory)
+                    GET_Login(handler, path, '../../remote-machine-client/wasm/site')
                     return
             else:
                 # its a static file like js, css
                 GET_file(handler, path, root_directory)
                 return
         except IndexError:
-            GET_Login(handler, path, root_directory)
+            GET_Main(handler, path, root_directory)
             return
 
 

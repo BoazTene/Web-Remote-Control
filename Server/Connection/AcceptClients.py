@@ -78,6 +78,8 @@ class Accept:
             # delete the userName from the database
             db = DataBase(r"C:\Users\user\Documents\RemoteControl\Server\pythonsqlite.db")
             db.exec("DELETE FROM machines WHERE client = '%s'" % len(self.clients.data))
+            
+            db.c.execute("INSERT INTO Authorized VALUES(?, ?, ?, ?)" , (self.c.getsockname()[0], self.creds[0], self.creds[1], 0,),)
             db.commit()
             db.close()
 

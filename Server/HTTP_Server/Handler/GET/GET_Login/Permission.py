@@ -1,5 +1,5 @@
 from urllib.parse import quote
-from Handler.GET.GET_Login.Data import *
+from .Data import *
 
 
 class Permission:
@@ -11,7 +11,7 @@ class Permission:
         if self.path in AUTHORIZED_FILES:
             return True
         else:
-            print(self.path)
+            print("403: " + self.path)
             return False
 
     def unescape(self):

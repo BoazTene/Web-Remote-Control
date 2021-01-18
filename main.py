@@ -1,10 +1,14 @@
-import ast
+import d3dshot
+import datetime
+from time import sleep
 
-class Test:
-    def __init__(self):
-        self.test = 3
+time = datetime.datetime.now()
+d = d3dshot.create()
+d.capture()
+sleep(5)
+image = d.get_latest_frame()
+print(image)
+print(datetime.datetime.now() - time)
+# print(image.save("test.jpg"))
+d.stop()
 
-
-test = Test()
-print(str(test))
-print(ast.literal_eval(repr(test)))

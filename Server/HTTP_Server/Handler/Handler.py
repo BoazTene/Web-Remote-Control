@@ -1,8 +1,8 @@
 import mimetypes
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler
-from Handler.GET.GET import GET
-from Handler.POST.POST import POST
+from .GET.GET import GET
+from .POST.POST import POST
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -10,7 +10,7 @@ class Handler(BaseHTTPRequestHandler):
         if not mimetypes.inited:
             mimetypes.init()  # try to read system mime.types
 
-        self.root_directory = "../Login"
+        self.root_directory = "../../remote-machine-client/wasm/site/Main"
 
         super().__init__(*args, **kwargs)
 
@@ -20,3 +20,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         POST(self)
+
+    def log_message(self, format, *args):
+        pass
+
