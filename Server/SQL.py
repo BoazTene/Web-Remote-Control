@@ -1,14 +1,21 @@
 import sqlite3
 
 
-# This class is used to handle the database
 class DataBase:
-    def __init__(self, db_name):
-        self.conn = sqlite3.connect(db_name)
+    """
+    This class is used to handle the database
+    """
+
+    def __init__(self, db_path):
+        self.conn = sqlite3.connect(db_path)
         self.c = self.conn.cursor()
 
-    # This function return list of all the data in the db
     def get_data(self):
+        """
+        This function return list of all the data in the db
+        :return:
+        """
+
         data = []
 
         for row in self.c.execute('SELECT * FROM machines'):
@@ -16,22 +23,44 @@ class DataBase:
 
         return data
 
-    # adds another raw to the table
     def add_raw(self, user_name, password, client):
+        """
+        adds another raw to the table
+        :param user_name:
+        :param password:
+        :param client:
+        :return:
+        """
+
         self.c.executemany('''INSERT INTO machines VALUES (?,?,?)''', [(user_name, password, client)])
 
-    # let you run any command on the database
     def exec(self, command):
+        """
+        let you run any command on the database
+        :param command:
+        :return:
+        """
         return self.c.execute(command)
 
-    # commits the changes
     def commit(self):
+        """
+        This function commits the changes
+        """
         self.conn.commit()
 
-    # closes the connection with the database
     def close(self):
+        """
+        closes the connection with the database
+        :return:
+        """
+
         self.conn.close()
 
-    # deletes a raw
     def delete(self, user_name):
+        """
+        closes the connection with the database
+        :param user_name:
+        :return:
+        """
+
         self.c.execute("DELETE FROM machines WHERE UserName = '%s'" % user_name)

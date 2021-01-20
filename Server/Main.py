@@ -9,49 +9,65 @@ from Server.Clients_Data import Clients
 from Server.HTTP_Server.Server import run
 
 
-class MachineClient:
+class Main:
+    """
+    This class is the main Server.
+
+    This class serve both web and tcp + udp connections.
+    """
+    DATABASE_PATH = r"C:\Users\user\Documents\RemoteControl\Server\pythonsqlite.db"
+    WEB_PORT = 5000
+
     def __init__(self, host, port):
         self.host = host
         self.port = port
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.db = DataBase(r"C:\Users\user\Documents\RemoteControl\Server\pythonsqlite.db")
+        self.db = DataBase(self.DATABASE_PATH)
         self.data = ""
         self.clients = Clients()
         self.remote_client = []
 
     def connection_check(self):
+        """
+        This function sends every 2 seconds Alive check message to see which clients are still connected.
+
+        :return:
+        """
+
         connection_check = ConnectionCheck(self.s, self.clients)
+
         if connection_check.check_database_update():
             return
+
         while True:
             time.sleep(2)
             connection_check.connect_db()
             self.clients = connection_check.start()
 
-    def connection(self):
-        while True:
-            for c in self.clients.data:
-                if c[1] is not  None:
-                    print("connection")
-                    self.s.settimeout(0.5)
-                    try:
-                        print(c[0].recv(10000).decode())
-                    except socket.timeout:
-                        pass
-                    # c[1].send()
-
     def accept(self):
+        """
+        This function is the main handler to accept new clients.
+        :return:
+        """
+
         while True:
             a = Accept(self.s, self.clients, self.host)
             a.accept()
             self.clients = a.clients
 
-
     def start(self):
+        """
+        This function is the main function which starts three threads:
+            1. web - the web thread
+            2. accept - the client accept thread
+            3. keep alive - the keep alive thread
+        :return:
+        """
+
         self.s.bind((self.host, self.port))
         self.s.listen(5)
 
-        web = threading.Thread(target=run, args=(5000,))
+        web = threading.Thread(target=run, args=(self.WEB_PORT,))
         web.start()
 
         accept = threading.Thread(target=self.accept)
@@ -59,11 +75,8 @@ class MachineClient:
 
         conn_check = threading.Thread(target=self.connection_check)
         conn_check.start()
-    
-        # connection = threading.Thread(target=self.connection)
-        # connection.start()
 
 
 if __name__ == "__main__":
-    server = MachineClient("0.0.0.0", 8080)
+    server = Main("0.0.0.0", 8080)
     server.start()
