@@ -38,10 +38,12 @@ class ConnectionCheck:
 
     # this function checks each client if he connected
     def check_who_alive(self):
+
         for row in self.data:
             try:
                 self.clients.data[int(row[2])][0].send(b"Alive Check")
-            except (ConnectionResetError, ConnectionAbortedError, ConnectionError, ConnectionRefusedError):
+            except (ConnectionResetError, ConnectionAbortedError, ConnectionError, ConnectionRefusedError) as e:
+                print(e)
                 self.dead_machine_clients.append(row[0])
             except IndexError:
                 pass
@@ -62,11 +64,17 @@ class ConnectionCheck:
                 index = i[2]
 
                 try:
+                    self.clients.data[int(index)][0].close()
                     self.clients.data.pop(int(index))
                     self.db.delete(user_name)
+
                     print("Deleted " + user_name)
-                except Exception:
-                    pass
+
+                    self.db.commit()
+                except Exception as e:
+                    print(e)
+
+            self.dead_machine_clients = []
 
     # this function delete all the not connected remote clients
     def delete_dead_remote_clients(self):
@@ -78,6 +86,7 @@ class ConnectionCheck:
             except IndexError:
                 print("IndexError")
                 pass
+        self.dead_remote_clients = []
 
     # this function checks if the database is not updated
     def check_database_update(self):

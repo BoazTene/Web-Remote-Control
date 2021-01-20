@@ -5,6 +5,7 @@ from Machine_Client.Images.ScreenShot import ScreenShot
 from Machine_Client.Images.ConvertToBase64 import ConvertImageToBase64
 from Machine_Client.Images.ImageDifference import ImageDifferences
 import time
+from eventlet.timeout import Timeout
 
 
 # This class handles the Remote Control
@@ -17,18 +18,45 @@ class RemoteControl:
         self.MAX_IMAGE_DGRAM = 2 ** 16 - 64
         self.screen_shot = ScreenShot()
         self.screen_shot.start_capture()
+        self.alive = False
+
+    def check_alive(self):
+        while True:
+            time.sleep(10)
+            self.alive = True
+            # self.s.sendto(b"<check-alive>", self.addr)
+            timeout = Timeout(5, OSError)
+            try:
+                while True:
+                    data = self.s.recvfrom(1024)
+                    print(data)
+                    if b"<check-alive>" in data:
+                        print("Falop")
+                        timeout.cancel()
+                        continue
+            except Exception:
+                print("DEAD MAN")
+                timeout.cancel()
+
+                return
 
     # this function sends a screenshot to the server
     def send_image(self):
         self.screen_shot.save()
 
         image = ConvertImageToBase64(self.screen_shot.buffered).convert()
-        print(len(image))
-        print(len(image) / self.MAX_IMAGE_DGRAM)
+
         num_of_segments = math.ceil(len(image) / self.MAX_IMAGE_DGRAM)
         # split_image = ConvertImageToBase64.split_image(image, )
         # print("\n\n" + self.addr + "\n\n")
-        self.s.sendto(b"<start>", self.addr)
+        if self.alive:
+            self.s.sendto(b"<check-alive>", self.addr)
+            self.s.sendto(b"<start>", self.addr)
+            print("Send")
+            self.alive = False
+        else:
+            self.s.sendto(b"<start>", self.addr)
+
         array_pos_start = 0
         while num_of_segments:
             array_pos_end = min(len(image), array_pos_start + self.MAX_IMAGE_DGRAM)
@@ -40,7 +68,6 @@ class RemoteControl:
         self.s.sendto(b"<end>", self.addr)
 
         self.old_image = self.screen_shot.buffered
-        print("image")
         return
 
         # if self.old_image is None:
@@ -94,6 +121,7 @@ class RemoteControl:
         # print(ConvertImageToBase64(screen_shot.buffered).convert())
         image = str(image_difference).encode('utf-8') + b"<end>"
         print(image)
+
         self.s.sendto(b"<start>", self.addr)
 
         array_pos_start = 0

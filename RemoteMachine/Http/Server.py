@@ -4,15 +4,19 @@ import sys
 sys.path.append(os.getcwd().rsplit('\\', 2)[0])
 
 from flask import Flask, request
-from flask_cors import CORS, cross_origin
+from flask_cors import cross_origin
 import socket
 import threading
 from RemoteMachine import HandShake
-from Machine_Client.main import Client as Register
-from Image.GetImage import GetImage
+from RemoteMachine.ClientHandler.Handler import ClientHandler
+from RemoteMachine.HostHandler.Main import Main
 
 
 class PortInUseError(Exception):
+    """
+        This exception raised when the Server starts on a used port
+    """
+
     def __init__(self, port):
         self.port = port
 
@@ -20,75 +24,108 @@ class PortInUseError(Exception):
         return "The Port {}, in use please choose another port.".format(self.port)
 
 
-# This class creates an http server
-# You can start the server in this way:
-# server = Server(1234) # The 1234 represent the port
-# all the is stored in self.commands and self.images
 class Server:
+    """
+    This class creates an http server
+    You can start the server in this way:
+    server = Server(1234) # The 1234 represent the port
+    all the is stored in self.commands and self.images
+    """
+
+    HOST_IP = "localhost"
+    PORT = 8080
+
     def __init__(self, port):
         self.port = port
         self.commands = []
         self.image = "Image"
         self.udp = None
-        self.get_image = None
+        self.handler = None
         threading.Thread(target=self.thread).start()
 
-    # checking if the port is in use
     def is_port_in_use(self):
+        """
+        This function return if the port in self.port in use.
+        """
+
         ADDRESS = "127.0.0.1"
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        if s.connect_ex((ADDRESS, self.port)) == 0:
-            return False
+        return s.connect_ex((ADDRESS, self.port)) != 0
+    
+    def register(self, username, password):
+        """
+        This function called each time the client wants to be register as a host.
+        :param username:
+        :param password:
+        :return:
+        """
+        main = Main(self.HOST_IP, self.PORT, username, password)
+        main.start()
+
+    def login(self, username, password):
+        """
+        This function called each time the client wants to connect to host.
+
+        :param username:
+        :param password:
+        :return:
+        """
+        tcp_hand_shake = HandShake.TcpHandShake("localhost", 8080, username, password)
+
+        state = tcp_hand_shake.run()
+
+        if not state[0]:
+            return str(False)
         else:
-            return True
+            self.udp = HandShake.UdpHandShake(state, "localhost")
+            if self.udp.success:
+                self.handler = ClientHandler(self.udp.session, (self.udp.host, self.udp.port))
+                self.handler.start()
+            return str(self.udp.success)
 
     def thread(self):
+        """
+        This function is the main thread for the flask http server.
+        """
         app = Flask(__name__)
-        cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
         @app.route("/image")
         @cross_origin()
         def get_image():
-            # print(len(self.get_image.images))
-            return self.get_image.images
-            # return ""
-            # return "Error: Permission denied"
+            """
+            This function is the handler for http request in the /image directory.
+            This function will return the last image received from the host.
+            :return:
+            """
+            return self.handler.image
 
         @app.route("/register")
         @cross_origin()
         def register():
+            """
+            This function is the handler for http request in the /register directory.
+            This function will register the as a host, with the username & password parameters.
+            :return:
+            """
             username = request.args.get('username')
             password = request.args.get('password')
-            print(password, username)
-            host = Register("localhost", 8080, username, password)
-            self.register_thread = threading.Thread(target=host.connect())
-            self.register_thread.start()
+
+            self.register(username, password)
+
             return "True"
 
         @app.route("/login")
         @cross_origin()
         def login():
+            """
+            This function is the handler for http request in the /login directory.
+            This function tries to connect to the host with the username & password parameters.
+            :return:
+            """
             username = request.args.get('username')
             password = request.args.get('password')
-            tcp_hand_shake = HandShake.TcpHandShake("localhost", 8080, username, password)
-
-            state = tcp_hand_shake.run()
-
-            if not state[0]:
-                return str(False)
-            else:
-                self.udp = HandShake.UdpHandShake(state, "localhost")
-                if self.udp.success:
-                    self.get_image = GetImage(self.udp.session, (self.udp.host, self.udp.port))
-                    self.get_image.start()
-                return str(self.udp.success)
-
-
-        @app.route("/command/<command>")
-        def get_command(command):
-            self.commands.append(command)
-            return "OK"
+            return self.login(username, password)
 
         if self.is_port_in_use():
             app.run(debug=True, use_reloader=False, port=self.port)

@@ -12,6 +12,11 @@ class GetImage(threading.Thread):
 
     def get_chunk(self):
         data, addr = self.session.recvfrom(self.MAX_IMAGE_DGRAM)
+        if b"<check-alive>" in data:
+            print("check alive")
+
+            self.session.sendto(b"<check-alive>", addr)
+            data.replace(b"<check-alive>", b"")
         return data
 
     @staticmethod
@@ -47,6 +52,10 @@ class GetImage(threading.Thread):
         return new_image.encode("utf-8")
 
     def run(self):
+        # <start>img<end>
+        #<key-s>key<key-e>
+        #<mouse-s>mouse-coords<mouse-e>
+        #<check-alive>
         while True:
             data = self.get_chunk()
             if "<start>" in data.decode("utf-8"):
@@ -61,6 +70,5 @@ class GetImage(threading.Thread):
                         self.images = image
                         self.old_image = image.decode("utf-8")
                         break
-            else:
-                print(data, "35")
+
 

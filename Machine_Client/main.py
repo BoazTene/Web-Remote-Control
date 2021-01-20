@@ -8,6 +8,9 @@ from .md5 import Md5
 
 
 class Client:
+    """
+        This class is the main handler for the Host.
+    """
     def __init__(self, host, port, user_name, password):
         self.remote_addr = None
         self.host = host
@@ -42,14 +45,27 @@ class Client:
 
     def remote_control(self):
         remote_control = RemoteControl(self.s, self.remote_addr)
-
+        check_alive = threading.Thread(target=remote_control.check_alive)
+        check_alive.start()
+        print("lhohohohohohoho")
         print("addr: %s" % str(self.remote_addr))
         remote_control.send_image()
         # exit(0)
-        while True:
+        while check_alive.is_alive():
             remote_control.send_image()
 
         remote_control.screen_shot.stop()
+
+        self.s = socket.socket()
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+        self.s.connect((self.host, self.port))
+        self.s.send(self.cred[0].encode("utf-8") + b"," + self.cred[1].encode("utf-8"))
+        data = self.s.recv(1024).decode("utf-8")
+        print(data)
+        if data == "OK":
+            return
+        exit(0)
+
 
     def connect(self):
         self.s.connect((self.host, self.port))

@@ -20,7 +20,7 @@ class Identification:
     def check_remote_client(self):
         index = 0
         for raw in self.data:
-            if self.creds[0] == raw[0]:
+            if self.creds[0] == raw[0] and self.creds[1] == raw[1]:
                 return [True, index]
             index += 1
 
