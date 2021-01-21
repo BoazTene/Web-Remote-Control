@@ -1,0 +1,257 @@
+
+body {
+    /* background-color: rgb(0, 0, 0); */
+    /* fc3153 */
+    background-color: #fffd86;
+    overflow: hidden;
+}
+.slider{
+    position:absolute;
+    width:20%;
+    height:5px;
+    overflow-x: hidden;
+    position: absolute;
+    top: 65%;
+    left: 40%;
+  }
+  
+  .line{
+    position:absolute;
+    opacity: 0.4;
+    background:#4a8df8;
+    width:150%;
+    height:5px;
+  }
+  
+  .subline{
+    position:absolute;
+    background:#4a8df8;
+    height:5px; 
+  }
+  .inc{
+    animation: increase 2s infinite;
+  }
+  .dec{
+    animation: decrease 2s 0.5s infinite;
+  }
+  
+  @keyframes increase {
+     from { left: -5%; width: 5%; }
+     to { left: 130%; width: 100%;}
+  }
+  @keyframes decrease {
+     from { left: -80%; width: 80%; }
+     to { left: 110%; width: 10%;}
+  }
+  
+@keyframes boxEnter {
+    0% {
+        /* height: 100%;
+        width: 100%; */
+        position: absolute;
+        left: -50%;
+        /* top: 0%; */
+    }
+}
+
+.box {
+    height: 70%;
+    width: 30%;
+    /* backgrou nd-color: #174b79; */
+    background-color: #e6e479b0;
+    border-radius: 80px;
+    margin-bottom: 30px;
+
+    margin-right: 20px;
+    
+    position: absolute;
+    left: 35%;
+    top: 15%;
+
+    border-radius: 30px;
+
+    visibility: hidden;
+
+    color: rgb(0, 0, 0);
+    box-shadow: 0px 0px 2px 50px rgba(0, 0, 0, 0.116);
+    /* animation-name: boxEnter;
+    animation-duration: 2s; */
+}
+
+.box .username{
+    position: absolute;
+    left: 10%;
+    top: 15%;
+
+    font-size: 150%;
+    font-family: "Heebo";
+    
+}   
+
+.box .username input{
+    width: 90%;
+    height: 35px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border-width: 5px;
+    font-family: "Heebo";
+    font-size: 100%;
+}
+
+.box .password{
+    position: absolute;
+    left: 10%;
+    top: 45%;
+    width: 80%;
+    font-size: 150%;
+    font-family: "Heebo";
+}
+
+.box .password input{
+    width: 90%;
+    height: 35px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border-width: 5px;
+    float: left;
+
+    font-family: "Heebo";
+    font-size: 100%;
+}
+
+
+.sign-in {
+    background: #fffd86;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    font-family: "Heebo";
+    font-size: 150%;
+    font-weight: 700;
+    padding: 5%;
+    padding-left: 10%;
+    padding-right: 10%;
+
+    box-shadow: 0px 0px 5px 5px #0000006e;
+    border: solid #d8d651 1px;
+    text-decoration: none;
+    cursor: pointer;
+    
+    text-align: center;
+
+    position: relative;
+    margin: 0;
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    -ms-transform: translate(-50%, -5%);
+    transform: translate(-50%, -5%);
+
+ }
+ 
+ @keyframes navStart {
+  0% {
+    position: relative;
+    top: -1000px;
+  }
+  100% {
+    position: relative;
+    top: 0px;
+  }
+ }
+
+ .noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+#show-password {
+  font-size: 100%;
+  background-color: transparent;
+  border: none;
+  outline: inherit;
+  display: block; 
+  overflow: hidden; 
+  white-space: nowrap; 
+  float: right;
+  position: absolute;
+  left: 80%;
+  top: 50%;;
+  /* padding: 100px; */
+}
+
+ #nav {
+  background-color: black;
+  margin: -10px;
+  padding-bottom: 0px;
+  height: 100%;
+  color: white;
+
+  animation-name: navStart;
+  animation-duration: 2s;
+ }
+
+ ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+li {
+  display: inline;
+  
+  /* background-color: #0400f8; */
+  font-size: 300%;
+  
+}
+
+#page {
+  text-decoration: none;
+  color: white;
+  padding-right: 200px;
+  text-align: center;
+  background-color: rgb(44, 44, 44);
+}
+
+a:hover {
+  background-color: rgb(66, 66, 66);
+}
+
+a {
+  text-decoration: none;
+  color: white;
+  padding-right: 200px;
+  text-align: center;
+  /* font-size: 250%; */
+}
+
+ .sign-in:hover {
+    box-shadow: 0px 0px 5px 1px #0000006e;
+ }
+
+ #headline {
+    position: absolute;
+    top: 2%;
+    left: 35%;
+    font-family: 'Luckiest Guy';
+    font-size: 250%;
+    /* overflow: hidden;
+    white-space: nowrap; */
+    /* text-shadow: 0px 0px 100px  #ffffff; */
+    /* box-shadow: 0px 0px 10px 4px black; */
+ }
+
+ .message {
+    position: absolute;
+    bottom: 27%;
+    left: 10%;
+
+    color:rgb(0, 0, 0);
+    font-family: "Heebo";
+    font-size: 130%;
+ }

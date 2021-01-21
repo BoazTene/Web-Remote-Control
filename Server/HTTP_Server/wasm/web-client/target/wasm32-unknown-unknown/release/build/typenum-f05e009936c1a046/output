@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\build\typenum-f05e009936c1a046\out\consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\build\typenum-f05e009936c1a046\out\op.rs

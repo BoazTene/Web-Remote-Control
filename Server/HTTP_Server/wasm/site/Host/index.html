@@ -1,0 +1,48 @@
+<!DOCTYPE html > 
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@900&display=swap" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8">
+    <title>Web-Remote-Control</title>
+    <link id="main-css" rel="stylesheet" href="Host/index.css" type="text/css">
+  </head>
+
+  <body>
+    <div id='nav'>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="Login">Login</a></li>
+        <li id="page" class="noselect">Register</li>
+        <li><a href="Download">Download</a></li>
+      </ul> 
+  </div>
+
+    <div class="slider loading">
+      <div class="line"></div>
+      <div class="subline inc"></div>
+      <div class="subline dec"></div>
+    </div>
+    
+    <div class='box'> 
+        <h id='headline'>Resigter as host</h>
+        <div class='username'>
+            <label for="username">UserName:</label>
+            <input type="text" id='username'>
+        </div>
+
+        <div class='password'>
+            <label for="password">Password: </i></label>
+            <br>
+            <button id="show-password"><i class="fa fa-eye"></i></button>
+
+            <input type="password" id='password' maxlength="15">
+        </div>
+        <div id="message" class="message"></div>
+        <button class="sign-in">Resigter</button>
+    </div>
+
+    <script src="Host/index.js" type="module"></script>
+  </body>
+</html>

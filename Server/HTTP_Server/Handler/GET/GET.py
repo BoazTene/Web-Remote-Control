@@ -11,22 +11,23 @@ class GET:
         self.handler = handler
         self.path = path
         self.root_directory = root_directory
+
         try:
             if self.path.split("?")[0].split("#")[0] == "/Login":
-                GET_Login(handler, path, '../../remote-machine-client/wasm/site')
+                GET_Login(handler, path, '../HTTP_Server/wasm/site')
                 return
             if self.path.split("?")[0].split("#")[0] == "/Host":
-                GET_Host(handler, path, '../../remote-machine-client/wasm/site')
+                GET_Host(handler, path, '../HTTP_Server/wasm/site')
                 return
             if list(self.path.split("/", 1)[1])[0] == "?" or list(self.path.split("/", 1)[1])[0] == "#":
                 access = Access(self.handler)
                 if access.check():
                     # remote control the user is authorized
-                    remoteControl(handler, path, "../../remote-machine-client/wasm/site/RemoteControl")
+                    remoteControl(handler, path, "../HTTP_Server/wasm/site/RemoteControl")
                     return
                 else:
                     # Login the user is unauthorized
-                    GET_Login(handler, path, '../../remote-machine-client/wasm/site')
+                    GET_Login(handler, path, '../HTTP_Server/wasm/site')
                     return
             else:
                 # its a static file like js, css

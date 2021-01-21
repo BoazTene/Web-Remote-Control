@@ -15,7 +15,8 @@ class GET:
         self.wfile = handler.wfile
 
         try:
-            self.path = Path(path, root_directory="../../remote-machine-client/wasm/site")
+            self.path = Path(path, root_directory="../HTTP_Server/wasm/site")
+
             f = self.send_head(self.path)
 
             if f:

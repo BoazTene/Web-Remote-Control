@@ -6,6 +6,7 @@ import os
 from .Path import Path
 from .Permission import Permission
 
+
 class GET:
     def __init__(self, handler, path, root_directory):
         try:
@@ -61,6 +62,7 @@ class GET:
             self.end_headers()
             return None
 
+
         f = None
         if os.path.isdir(path.path) :
             parts = urllib.parse.urlsplit(self.path)
@@ -75,10 +77,12 @@ class GET:
                     path = index
                     break
             else:
+
                 self.send_response(HTTPStatus.FORBIDDEN)
                 self.end_headers()
                 return None
         ctype = path.guess_type()
+
 
         # check for trailing "/" which should return 404. See Issue17324
         # The test for this was added in test_httpserver.py
@@ -86,9 +90,11 @@ class GET:
         # See discussion on python-dev and Issue34711 regarding
         # parseing and rejection of filenames with a trailing slash
         if path.path.endswith("/"):
+
             self.send_error(HTTPStatus.NOT_FOUND, "File not found")
             return None
         try:
+
             f = open(path.path, 'rb')
         except OSError:
             self.send_error(HTTPStatus.NOT_FOUND, "File not found")

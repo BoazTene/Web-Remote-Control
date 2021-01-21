@@ -1,0 +1,10 @@
+C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\deps\concurrent_queue-3d987ce26963d692.rmeta: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\bounded.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\single.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\unbounded.rs
+
+C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\deps\libconcurrent_queue-3d987ce26963d692.rlib: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\bounded.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\single.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\unbounded.rs
+
+C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\deps\concurrent_queue-3d987ce26963d692.d: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\bounded.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\single.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\unbounded.rs
+
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\lib.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\bounded.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\single.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\concurrent-queue-1.2.2\src\unbounded.rs:

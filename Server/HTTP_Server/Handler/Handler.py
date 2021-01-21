@@ -6,11 +6,13 @@ from .POST.POST import POST
 
 
 class Handler(BaseHTTPRequestHandler):
+    """"""
+
     def __init__(self, *args, directory=None, **kwargs):
         if not mimetypes.inited:
             mimetypes.init()  # try to read system mime.types
 
-        self.root_directory = "../../remote-machine-client/wasm/site/Main"
+        self.root_directory = "../HTTP_Server/wasm/site/Main"
 
         super().__init__(*args, **kwargs)
 

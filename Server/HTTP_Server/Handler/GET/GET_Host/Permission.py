@@ -11,6 +11,7 @@ class Permission:
         if self.path in AUTHORIZED_FILES:
             return True
         else:
+            print("host ", self.path)
             return False
 
     def unescape(self):

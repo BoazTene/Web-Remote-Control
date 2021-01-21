@@ -14,18 +14,16 @@ class Path:
             '.h': 'text/plain',
         })
 
-
         self.path = path
 
         self.root_directory = root_directory #"../Login"
 
         if self.path.split("/")[1] == "node_modules":
-            self.path = "../../remote-machine-client/wasm/site/" + self.path
+            self.path = "../HTTP_Server/wasm/site" + self.path
             self.path = self.translate_path(self.path)
         else:
             self.path = os.path.relpath(self.root_directory + self.path)
             self.path = self.translate_path(self.path)
-
 
     def remove_parameters(self):
         return self.path.split("?", 1)[0].split("#", 1)[0]

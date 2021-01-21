@@ -17,7 +17,8 @@ class Path:
 
         self.path = path
         self.root_directory = root_directory #"../Login"
-
+        print(self.path)
+        print(self.root_directory)
         self.root_dir()
 
         if self.path.split("/")[1] == "node_modules":
