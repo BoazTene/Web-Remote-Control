@@ -1,0 +1,14 @@
+AUTHORIZED_FILES = [
+    '..\\HTTP_Server\\wasm\\site\\Main\\index.html',
+    '..\\HTTP_Server\\wasm\\site\\Main\\index.css',
+    '..\\HTTP_Server\\wasm\\site\\Main\\index.js',
+    '..\\HTTP_Server\\wasm\\site\\Host\\index.js',
+    '..\\HTTP_Server\\wasm\\site\\Host\\index.js',
+    '..\\HTTP_Server\\wasm\\site\\Host\\index.css',
+    '..\\HTTP_Server\\wasm\\site\\Login\\index.css',
+    '..\\HTTP_Server\\wasm\\site\\Login\\index.js',
+    "..\\HTTP_Server\\wasm\\site\\RemoteControl\\index.css",
+    "..\\HTTP_Server\\wasm\\site\\RemoteControl\\index.js",
+    '..\\HTTP_Server\\wasm\\site\\node_modules\\web-client\\web_client.js',
+    '..\\HTTP_Server\\wasm\\site\\node_modules\\web-client\\web_client_bg.wasm',
+]

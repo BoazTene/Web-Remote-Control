@@ -1,0 +1,15 @@
+{
+  "name": "web-client",
+  "collaborators": [
+    "boaz tene <boaztene2005@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "web_client_bg.wasm",
+    "web_client.js",
+    "web_client.d.ts"
+  ],
+  "module": "web_client.js",
+  "types": "web_client.d.ts",
+  "sideEffects": false
+}

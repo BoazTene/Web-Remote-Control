@@ -1,0 +1,1 @@
+{"rustc":578464894881672569,"features":"[\"async-std\", \"cookie-secure\", \"default\", \"fs\"]","target":10429514197457385088,"profile":10803726696109476711,"path":2896728768870091967,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"release\\.fingerprint\\http-types-4ec7eeafe8fea697\\dep-build-script-build-script-build"}}],"rustflags":[],"metadata":2689166882628058864,"config":0}

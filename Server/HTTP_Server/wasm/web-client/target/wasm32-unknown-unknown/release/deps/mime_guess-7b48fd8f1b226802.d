@@ -1,0 +1,12 @@
+C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\deps\mime_guess-7b48fd8f1b226802.rmeta: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\impl_bin_search.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\mime_types.rs C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\build\mime_guess-0991454d7dc1b74e\out/mime_types_generated.rs
+
+C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\deps\libmime_guess-7b48fd8f1b226802.rlib: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\impl_bin_search.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\mime_types.rs C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\build\mime_guess-0991454d7dc1b74e\out/mime_types_generated.rs
+
+C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\deps\mime_guess-7b48fd8f1b226802.d: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\impl_bin_search.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\mime_types.rs C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\build\mime_guess-0991454d7dc1b74e\out/mime_types_generated.rs
+
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\lib.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\impl_bin_search.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\mime_guess-2.0.3\src\mime_types.rs:
+C:\Users\user\Documents\Web-Remote-Control\remote-machine-client\wasm\web-client\target\wasm32-unknown-unknown\release\build\mime_guess-0991454d7dc1b74e\out/mime_types_generated.rs:
+
+# env-dep:OUT_DIR=C:\\Users\\user\\Documents\\Web-Remote-Control\\remote-machine-client\\wasm\\web-client\\target\\wasm32-unknown-unknown\\release\\build\\mime_guess-0991454d7dc1b74e\\out
