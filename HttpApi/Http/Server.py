@@ -9,6 +9,7 @@ import socket
 import threading
 from HttpApi.ClientHandler import HandShake
 from HttpApi.ClientHandler.Handler import ClientHandler
+from HttpApi.ClientHandler.Main import Main as ClientMain
 from HttpApi.HostHandler.Main import Main
 
 
@@ -32,7 +33,7 @@ class Server:
     all the is stored in self.commands and self.images
     """
 
-    HOST_IP = "localhost"
+    HOST_IP = "192.168.1.28"
     PORT = 8080
 
     def __init__(self, port):
@@ -66,23 +67,14 @@ class Server:
     def login(self, username, password):
         """
         This function called each time the client wants to connect to host.
-
         :param username:
         :param password:
         :return:
         """
-        tcp_hand_shake = HandShake.TcpHandShake("localhost", 8080, username, password)
-
-        state = tcp_hand_shake.run()
-
-        if not state[0]:
-            return str(False)
-        else:
-            self.udp = HandShake.UdpHandShake(state, "localhost")
-            if self.udp.success:
-                self.handler = ClientHandler(self.udp.session, (self.udp.host, self.udp.port))
-                self.handler.start()
-            return str(self.udp.success)
+        handler = ClientMain(self.HOST_IP, self.PORT, username, password)
+        result = handler.run()
+        self.handler = handler.image_handler
+        return result
 
     def thread(self):
         """
@@ -126,6 +118,28 @@ class Server:
             username = request.args.get('username')
             password = request.args.get('password')
             return self.login(username, password)
+
+        @app.route("/key")
+        @cross_origin()
+        def keyboard():
+            try:
+                key = request.args.get('key')
+                self.handler.keyboard_handler.keyboard(key)
+                return "True"
+            except Exception as e:
+                return "False"
+
+        @app.route("/mouse")
+        @cross_origin()
+        def mouse():
+            # try:
+            #     x = request.args.get('x')
+            #     y = request.args.get('y')
+            #     self.handler.mouse(x, y)
+            #     return "True"
+            # except Exception:
+            #     return "False"
+            return "False"
 
         if self.is_port_in_use():
             app.run(debug=True, use_reloader=False, port=self.port)

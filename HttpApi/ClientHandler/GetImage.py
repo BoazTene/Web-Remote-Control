@@ -16,10 +16,11 @@ class GetImage:
         self.address = address
         self.image = data
 
-
         self.IMAGE_BREAKER = breakers[0]
         self.BREAKERS = breakers
         self.MAX_IMAGE_DGRAM = buffer_size
+
+        self.recv = []
 
     def get_chunk(self):
         """
@@ -27,6 +28,10 @@ class GetImage:
          """
 
         data, addr = self.session.recvfrom(self.MAX_IMAGE_DGRAM)
+
+        start_breakers = [breaker[0] for breaker in self.BREAKERS]
+        self.recv.extend([breaker for breaker in start_breakers if breaker in data.decode("utf-8")])
+
         return data
 
     def find_end_breaker(self, start_breaker, data):
@@ -37,10 +42,6 @@ class GetImage:
         :param data: str
         :return: bool
         """
-        # end_breaker = self.BREAKERS[[breaker[0] for breaker in self.BREAKERS].index(start_breaker)]
-        # print(any(data in breaker for breaker in end_breaker))
-        # print(end_breaker)
-        print(True if self.BREAKERS[0][1] in data else False)
         return True if self.BREAKERS[0][1] in data else False
 
     def run(self):
@@ -52,14 +53,12 @@ class GetImage:
                 .split(self.IMAGE_BREAKER[1].encode("utf-8"))[0]
             return
 
-        # data = self.get_chunk()
-        # self.image += data
         while True:
             data = self.get_chunk()
             self.image += data
 
             if self.IMAGE_BREAKER[1] in data.decode('utf-8'):
-                print(data)
                 self.image = self.image.split(self.IMAGE_BREAKER[0].encode("utf-8"))[1]\
                     .split(self.IMAGE_BREAKER[1].encode("utf-8"))[0]
+                # print(self.recv)
                 return

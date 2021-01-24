@@ -18,7 +18,6 @@ async function load_module(){
 
     module = await wasm("../node_modules/web-client/web_client_bg.wasm");
 
-    // console.log(module.create_buffer(2));
     console.log(module)
     document.getElementsByClassName('box')[0].style.visibility = "visible";
     document.getElementsByClassName('loading')[0].style.display = "none";
@@ -28,7 +27,7 @@ async function load_module(){
     bar.left = "45%";
 
     document.getElementById('show-password').addEventListener('click', showPassword, false);
-
+    document.getElementById("username").focus();
 }
 
 load_module()
@@ -43,37 +42,6 @@ async function sign_in(){
     login.start();
 }
 
-/**
- * This Class is the Buffer handler.
- * 
- * The Class can write, read in the wasm memory.
- * You can use this Class to send messages between the js and the wasm
- */
-class Buffer{
-    constructor(module){
-        this.module = module;
-        this.wasmMemory = new Uint8Array(module.memory.buffer);
-        this.bufferPointer = this.getBufferPointer();
-        console.log(this.bufferPointer)
-    }
-    
-
-    // this getter gets the start location of the buffer in the memory
-    getBufferPointer(){
-        return get_wasm_memory_buffer_pointer();
-    }
-
-    // this method read byte at the byte index 
-    readAtByte(byteIndex){
-        console.log(this.wasmMemory)
-        return this.wasmMemory[this.bufferPointer + byteIndex];
-    }
-
-    // this method write a byte at the byte index
-    writeAtByte(byteIndex, byte){
-        this.wasmMemory[this.bufferPointer + byteIndex] = byte;
-    }
-}
 
 /**
  * This class is used to Login.

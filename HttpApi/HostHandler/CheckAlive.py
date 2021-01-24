@@ -1,3 +1,4 @@
+import socket
 from eventlet.timeout import Timeout
 # from HttpApi.HostHandler.Handler import HostHandler
 from time import sleep
@@ -27,8 +28,8 @@ class CheckAlive(threading.Thread):
         """
         This function sends the check alive message
         """
-
-        self.session.sendto(self.ALIVE_CHECK_BREAKER[0], self.address)
+        print("send")
+        self.session.sendto(self.ALIVE_CHECK_BREAKER[0].encode("utf-8"), self.address)
 
     def start_timeout(self):
         """
@@ -59,10 +60,12 @@ class CheckAlive(threading.Thread):
                 self.send_check_alive()
                 while True:
                     if self.recv_ok:
+                        print("recv")
                         self.recv_ok = False
                         self.stop_timeout()
-                        continue
-            except Exception:
+                        break
+            except Exception as e:
+                print(e)
                 print("Disconnect")
                 self.stop_timeout()
                 return

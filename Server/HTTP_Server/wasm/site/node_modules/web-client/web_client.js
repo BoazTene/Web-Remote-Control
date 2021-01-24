@@ -209,6 +209,35 @@ function __wbg_adapter_18(arg0, arg1, arg2) {
 /**
 * @returns {any}
 */
+export function keys() {
+    var ret = wasm.keys();
+    return takeObject(ret);
+}
+
+/**
+* @param {number} x
+* @param {number} y
+* @returns {any}
+*/
+export function send_mouse_pos(x, y) {
+    var ret = wasm.send_mouse_pos(x, y);
+    return takeObject(ret);
+}
+
+/**
+* @param {string} key
+* @returns {any}
+*/
+export function send_key(key) {
+    var ptr0 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ret = wasm.send_key(ptr0, len0);
+    return takeObject(ret);
+}
+
+/**
+* @returns {any}
+*/
 export function get_image() {
     var ret = wasm.get_image();
     return takeObject(ret);
@@ -293,7 +322,7 @@ function handleError(f) {
         }
     };
 }
-function __wbg_adapter_57(arg0, arg1, arg2, arg3) {
+function __wbg_adapter_60(arg0, arg1, arg2, arg3) {
     wasm.wasm_bindgen__convert__closures__invoke2_mut__ha2423ea20de566bf(arg0, arg1, addHeapObject(arg2), addHeapObject(arg3));
 }
 
@@ -421,7 +450,7 @@ async function init(input) {
                 const a = state0.a;
                 state0.a = 0;
                 try {
-                    return __wbg_adapter_57(a, state0.b, arg0, arg1);
+                    return __wbg_adapter_60(a, state0.b, arg0, arg1);
                 } finally {
                     state0.a = a;
                 }
@@ -486,8 +515,8 @@ async function init(input) {
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_closure_wrapper303 = function(arg0, arg1, arg2) {
-        var ret = makeMutClosure(arg0, arg1, 27, __wbg_adapter_18);
+    imports.wbg.__wbindgen_closure_wrapper329 = function(arg0, arg1, arg2) {
+        var ret = makeMutClosure(arg0, arg1, 40, __wbg_adapter_18);
         return addHeapObject(ret);
     };
 

@@ -75,4 +75,4 @@ class TcpHandShake:
             self.send_creds()
             return self.ok()
         except Exception:
-            return [False, None]
+            return False

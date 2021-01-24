@@ -1,6 +1,7 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
+use dict::{ Dict, DictIface };
 use web_sys::{HtmlImageElement, Event, CustomEvent, CustomEventInit, Request, RequestInit, RequestMode, Response};
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
@@ -9,11 +10,48 @@ mod http;
 
 const WASM_MEMORY_BUFFER_SIZE: usize = 2;
 static mut WASM_MEMORY_BUFFER: [u8; WASM_MEMORY_BUFFER_SIZE] = [0; WASM_MEMORY_BUFFER_SIZE];
-
+static mut KEYS: std::vec::Vec<dict::DictEntry<std::string::String>> = Dict::<String>::new();
 
 #[wasm_bindgen]
 extern {
     pub fn alert(s: &str);
+}
+
+#[wasm_bindgen]
+pub async fn keys(){
+  unsafe{
+  KEYS.add(" ".to_string(), "space".to_string() );
+  KEYS.add("ArrowDown".to_string(), "down".to_string() );
+  KEYS.add("ArrowLeft".to_string(), "left".to_string() );
+  KEYS.add("ArrowRight".to_string(), "right".to_string() );
+  KEYS.add("ArrowUp".to_string(), "up".to_string() );
+  KEYS.add("AudioVolumeDown".to_string(), "volumedown".to_string() );
+  KEYS.add("AudioVolumeUp".to_string(), "volumeup".to_string() );
+  KEYS.add("AudioVolumeMute".to_string(), "volumemute".to_string() );
+  }
+}
+
+#[wasm_bindgen]
+pub async fn send_mouse_pos(x: i32, y: i32) {
+  let http = http::Http {};
+  let response: String = http::Http::to_string(http.get(&format!("http://localhost:1234/mouse?x={}&y={}", x, y)).await).await;
+}
+
+#[wasm_bindgen]
+pub async fn send_key(mut key: String) {
+  unsafe{
+  for i in &KEYS {
+    if i.key.eq(&key) {
+      key = i.val.to_string();
+    }
+  }
+}
+
+  // key = KEYS.get(&key).to_owned();
+
+  let http = http::Http {};
+  let response: String = http::Http::to_string(http.get(&format!("http://localhost:1234/key?key={}", key)).await).await;
+
 }
 
 #[wasm_bindgen]
@@ -118,7 +156,7 @@ pub async fn test(mut username: String, mut password: String) {
         let window = web_sys::window().unwrap();
         
         let location = window.location();
-        location.replace(&format!("http://localhost:5000?username={}&password={}", encrypt_username, encrypt_password));
+        location.replace(&format!("http://192.168.1.28:5000?username={}&password={}", encrypt_username, encrypt_password));
     } else {
         store_value_in_wasm_memory_buffer_index_zero(0);
     }

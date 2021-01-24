@@ -1,5 +1,6 @@
-from HttpApi.HostHandler.Handshake import TCPHandshake, UDPHandshake
+from HttpApi.HostHandler.Handshake import TCPHandshake, UDPHandshake, NewPort
 from HttpApi.HostHandler.Handler import HostHandler
+from HttpApi.HostHandler.KeyboardHandler import KeyboardHandler
 import threading
 import socket
 
@@ -18,8 +19,14 @@ class Main(threading.Thread):
         self.password = password
 
         self.tcp_session = None
+
         self.udp_session = None
         self.udp_address = None
+
+        self.keyboard_session = None
+        self.keyboard_address = None
+
+        self.handler = False
 
     def tcp_handshake(self):
         """
@@ -56,7 +63,7 @@ class Main(threading.Thread):
 
         while True:
             data = self.tcp_session.recv(1024).decode("utf-8")
-            
+
             if data == until_data:
                 self.tcp_session.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
                 return
@@ -67,8 +74,24 @@ class Main(threading.Thread):
         :return:
         """
 
-        handler = HostHandler(self.udp_session, self.udp_address)
-        handler.run()
+        self.handler = HostHandler(self.udp_session, self.udp_address)
+        self.handler.start()
+
+        # keyboard_handler = KeyboardHandler(self.keyboard_session, self.keyboard_address)
+        # keyboard_handler.start()
+
+        while self.handler.is_alive()  : #and keyboard_handler.is_alive()
+            pass
+
+    def new_port(self):
+        """
+        This function opens new udp hole punching port.
+        The function opens the port using the another udp hole punching port.
+        :return:
+        """
+
+        new_port = NewPort.NewPort(self.udp_session, self.udp_address)
+        return new_port.run()
 
     def run(self):
         """
@@ -77,9 +100,14 @@ class Main(threading.Thread):
         """
 
         while self.tcp_handshake():
+            print("da")
             self.keep_alive("Start-Remote-Control")
 
             if not self.udp_handshake():
                 continue
+
+            print("Done")
+
+            self.keyboard_session, self.keyboard_address = self.new_port()
 
             self.remote_control()

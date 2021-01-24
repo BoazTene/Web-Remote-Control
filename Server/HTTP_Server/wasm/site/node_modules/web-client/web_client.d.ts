@@ -3,6 +3,21 @@
 /**
 * @returns {any}
 */
+export function keys(): any;
+/**
+* @param {number} x
+* @param {number} y
+* @returns {any}
+*/
+export function send_mouse_pos(x: number, y: number): any;
+/**
+* @param {string} key
+* @returns {any}
+*/
+export function send_key(key: string): any;
+/**
+* @returns {any}
+*/
 export function get_image(): any;
 /**
 * @param {number} value
@@ -42,6 +57,9 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly keys: () => number;
+  readonly send_mouse_pos: (a: number, b: number) => number;
+  readonly send_key: (a: number, b: number) => number;
   readonly get_image: () => number;
   readonly store_value_in_wasm_memory_buffer_index_zero: (a: number) => void;
   readonly lahoh: (a: number, b: number) => void;

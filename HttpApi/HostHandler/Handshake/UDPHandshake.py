@@ -84,7 +84,7 @@ class UDPHandshake:
             return True
         else:
             self.address = self.msg_to_addr(data)
-            return False
+            return True
 
     def run(self):
         """

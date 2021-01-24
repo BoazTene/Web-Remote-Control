@@ -1,6 +1,9 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function keys(): number;
+export function send_mouse_pos(a: number, b: number): number;
+export function send_key(a: number, b: number): number;
 export function get_image(): number;
 export function store_value_in_wasm_memory_buffer_index_zero(a: number): void;
 export function lahoh(a: number, b: number): void;

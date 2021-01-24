@@ -9,7 +9,7 @@ class Keyboard:
     def __init__(self, session, address, data):
         self.session = session
         self.address = address
-        self.data = data.decode("utf-8")
+        self.data = data
 
         self.key = self.get_key()
 
@@ -23,4 +23,7 @@ class Keyboard:
         """
         This function press the key stored in the key
         """
-        pyautogui.press(self.key)
+        if self.key != " ":
+            pyautogui.press(self.key)
+        else:
+            pyautogui.press("space")

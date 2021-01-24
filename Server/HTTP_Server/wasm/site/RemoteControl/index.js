@@ -1,4 +1,4 @@
-import wasm, {get_image} from "../node_modules/web-client/web_client.js";
+import wasm, {get_image, send_key, keys, send_mouse_pos} from "../node_modules/web-client/web_client.js";
 let module;
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -19,12 +19,21 @@ async function load_module(){
     document.getElementsByClassName('loader')[0].style.visibility = "hidden";
     document.getElementById('loader-text').style.visibility = "hidden";
     onStart();
+
+    keys();
 }
 
 load_module()
 
 // canvas.addEventListener('mousemove', onMouseMove);
 // canvas.addEventListener('click', onMouseClicked);
+
+function onkeypress(event) {
+    console.log(event.key);
+    send_key(event.key);
+    event.preventDefault();
+    return false;  
+}
 
 
 // this funciton is used to draw an image on the canvas
@@ -45,8 +54,6 @@ function draw(event) {
     var ctx = document.getElementById('canvas').getContext('2d');
     var img = new Image();
     img.onload = function() {
-        console.log(img.naturalWidth);
-        console.log(img.naturalHeight);
         console.log(Math.max( body.scrollHeight, body.offsetHeight, 
             html.clientHeight, html.scrollHeight, html.offsetHeight ));
         
@@ -57,9 +64,10 @@ function draw(event) {
     img.src = img_src;
 }
 
+window.addEventListener('keydown', onkeypress);
 // this funciton called every time the user move the mouse anywhere on the canvas
 function onMouseMove(event){
-    console.log("x: " + event.clientX + " y:" +event.clientY);
+    send_mouse_pos(event.clientX, event.clientY);
 }
 
 // this function is called every time the user click anywhere on the canvas
@@ -76,6 +84,7 @@ function onStart() {
     canvas.style.top = ((window.innerHeight/100) * 7) + "px";
     canvas.style.position = "relative";
     window.addEventListener("newimage", draw)
+    
     setInterval(function() {
         get_image();
         // src = "data:image/jpeg;base64," + src;

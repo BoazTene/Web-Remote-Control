@@ -1,10 +1,11 @@
 from HttpApi.HostHandler.CheckAlive import CheckAlive
-# from HttpApi.HostHandler.Keyboard import keyboard
+from HttpApi.HostHandler.Keyboard import Keyboard
 from HttpApi.HostHandler.Mouse import Mouse
 from HttpApi.HostHandler.SendImage import SendImage
+import threading
 
 
-class HostHandler:
+class HostHandler(threading.Thread):
     """
     This class is the http api for the host.
     """
@@ -17,14 +18,16 @@ class HostHandler:
     BREAKERS = [IMAGE_BREAKER, ALIVE_CHECK_BREAKER, KEYBOARD_BREAKER, MOUSE_BREAKER]
 
     def __init__(self, session, address):
+        super().__init__()
         self.session = session
         self.address = address
 
-        self.check_alive = CheckAlive(self.session, self.address, self.ALIVE_CHECK_BREAKER)
         self.images = SendImage(self.session, self.address, self.IMAGE_BREAKER)
+        self.check_alive = CheckAlive(self.session, self.address, self.ALIVE_CHECK_BREAKER)
 
         self.check_alive.start()
         self.images.start()
+        print("STart")
 
     def get_data(self):
         """
@@ -38,33 +41,31 @@ class HostHandler:
 
         This function returns all the start breakers in data
         """
-        return {breaker for breaker in [breaker[0] for breaker in self.BREAKERS] if breaker in data}
-
-    def keyboard(self, data):
-        pass
+        start_breakers = [breaker[0] for breaker in self.BREAKERS]
+        return [breaker for breaker in start_breakers if breaker in data]
 
     def mouse(self, data):
-        pass
+        Mouse(self.session, self.address, data, self.MOUSE_BREAKER).set_pos()
 
     def check_alive_recv(self):
-        self.check_alive = True
+        """
+        This function is used to tell the check alive class that the client received to the ok message.
+        :return:
+        """
+
+        self.check_alive.recv_ok = True
 
     def run(self):
         """
         This function listens to incoming messages and acting by the messages
         """
 
-        try:
-            while self.check_alive.is_alive():
-                data = self.get_data()
-                start_breakers = self.find_start_breaker(data)
+        while True:
+            data = self.get_data()
+            start_breakers = self.find_start_breaker(data[0].decode("utf-8"))
+            for i in start_breakers:
+                if i == self.MOUSE_BREAKER[0]:
+                    self.mouse(data[0].decode("utf-8"))
+                elif i == self.ALIVE_CHECK_BREAKER[0]:
+                    self.check_alive_recv()
 
-                for i in start_breakers:
-                    if i == self.KEYBOARD_BREAKER:
-                        self.keyboard(data)
-                    elif i == self.MOUSE_BREAKER:
-                        self.mouse(data)
-                    elif i == self.ALIVE_CHECK_BREAKER:
-                        self.check_alive_recv()
-        except Exception:
-            return

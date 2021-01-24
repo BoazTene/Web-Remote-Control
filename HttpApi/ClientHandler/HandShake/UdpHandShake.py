@@ -39,6 +39,7 @@ class UdpHandShake:
         if self.OK("ok"):
             if self.OK("ok"):
                 self.get_client()
+                print(self.addr)
                 self.session.sendto(b"Ok, Client", self.addr)
                 print("The HandShake completed successfully")
                 self.success = True
@@ -60,6 +61,21 @@ class UdpHandShake:
 
     def send_key(self):
         self.session.sendto(self.key.encode("utf-8"), (self.host, self.port))
+
+    def get_port_and_key(self):
+        """
+        This function is the first stage in the handshake
+        This function return the port and key from the server.
+
+        :return:
+        """
+
+        while True:
+            data = self.tcp_session.recv(1024).decode("utf-8")
+            if data != "Alive Check":
+                break
+        print(data)
+        return int(data.split("!")[1]), data.split("!")[2]
 
     def OK(self, recv):
         """
