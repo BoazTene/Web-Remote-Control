@@ -1,5 +1,8 @@
 import os
 import sys
+import time
+from datetime import datetime
+from itertools import combinations
 
 sys.path.append(os.getcwd().rsplit('\\', 2)[0])
 
@@ -7,10 +10,13 @@ from flask import Flask, request
 from flask_cors import cross_origin
 import socket
 import threading
-from HttpApi.ClientHandler import HandShake
-from HttpApi.ClientHandler.Handler import ClientHandler
+# from flask_socketio import SocketIO
 from HttpApi.ClientHandler.Main import Main as ClientMain
 from HttpApi.HostHandler.Main import Main
+from datetime import datetime
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 
 class PortInUseError(Exception):
@@ -33,7 +39,7 @@ class Server:
     all the is stored in self.commands and self.images
     """
 
-    HOST_IP = "192.168.1.28"
+    HOST_IP = "192.168.1.38"
     PORT = 8080
 
     def __init__(self, port):
@@ -42,6 +48,9 @@ class Server:
         self.image = "Image"
         self.udp = None
         self.handler = None
+        self.keyboard_handler = None
+        self.main_handler = None
+
         threading.Thread(target=self.thread).start()
 
     def is_port_in_use(self):
@@ -61,8 +70,18 @@ class Server:
         :param password:
         :return:
         """
-        main = Main(self.HOST_IP, self.PORT, username, password)
-        main.start()
+        print("My name is Guy, Guy made is bug, It never happend before.")
+        # try:
+        handler = Main(self.HOST_IP, self.PORT, username, password, tcp=True)
+        handler.tcp_handshake()
+        handler.start()
+
+        self.main_handler = handler
+
+        return "True"
+        # except Exception as e:
+        #     print(e)
+        #     return "False"
 
     def login(self, username, password):
         """
@@ -73,7 +92,10 @@ class Server:
         """
         handler = ClientMain(self.HOST_IP, self.PORT, username, password)
         result = handler.run()
+        self.main_handler = handler
         self.handler = handler.image_handler
+        self.keyboard_handler = handler.keyboard_handler
+
         return result
 
     def thread(self):
@@ -81,6 +103,8 @@ class Server:
         This function is the main thread for the flask http server.
         """
         app = Flask(__name__)
+        # app.config['SECRET_KEY'] = '1234'
+        # socketio = SocketIO(app, cors_allowed_origins="*")
 
         @app.route("/image")
         @cross_origin()
@@ -90,7 +114,10 @@ class Server:
             This function will return the last image received from the host.
             :return:
             """
-            return self.handler.image
+            try:
+                return self.handler.image
+            except Exception:
+                return 'None'
 
         @app.route("/register")
         @cross_origin()
@@ -103,9 +130,7 @@ class Server:
             username = request.args.get('username')
             password = request.args.get('password')
 
-            self.register(username, password)
-
-            return "True"
+            return self.register(username, password)
 
         @app.route("/login")
         @cross_origin()
@@ -119,12 +144,26 @@ class Server:
             password = request.args.get('password')
             return self.login(username, password)
 
-        @app.route("/key")
+        @app.route("/key", methods=['POST'])
         @cross_origin()
         def keyboard():
             try:
-                key = request.args.get('key')
-                self.handler.keyboard_handler.keyboard(key)
+                combination = request.args.get('combination')
+                hold = request.args.get('hold')
+                print(combination, hold)
+                if combination == "true":
+                    key = request.args.get('key')
+                    self.keyboard_handler.keyboard(key, combination=True)
+                elif hold == 'true':
+                    key = request.args.get('key')
+                else:
+                    key = request.args.get('key')
+                    print(key)
+                    self.keyboard_handler.keyboard(key)
+
+                # print(key)
+                # print("Key recv at: %s" % str(datetime.now()))
+                # self.keyboard_handler.keyboard(key)
                 return "True"
             except Exception as e:
                 return "False"
@@ -132,16 +171,29 @@ class Server:
         @app.route("/mouse")
         @cross_origin()
         def mouse():
-            # try:
-            #     x = request.args.get('x')
-            #     y = request.args.get('y')
-            #     self.handler.mouse(x, y)
-            #     return "True"
-            # except Exception:
-            #     return "False"
             return "False"
 
+        @app.route("/close")
+        @cross_origin()
+        def close():
+            """
+            Disconnects from all connections.
+            :return:
+            """
+            # sys.exit(0)
+            try:
+                print("\n\n\n\n\n\n\n\n\n\nexit\n\n\n\n\n\n\n")
+                assert self.main_handler
+                self.main_handler.close()
+                # self.keyboard_handler.close()
+
+                return "True"
+            except Exception as e:
+                print(e)
+                return "False"
+
         if self.is_port_in_use():
+            # app.logger.disabled = True
             app.run(debug=True, use_reloader=False, port=self.port)
         else:
             raise PortInUseError(self.port)

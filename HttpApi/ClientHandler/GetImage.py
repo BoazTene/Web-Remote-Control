@@ -60,5 +60,6 @@ class GetImage:
             if self.IMAGE_BREAKER[1] in data.decode('utf-8'):
                 self.image = self.image.split(self.IMAGE_BREAKER[0].encode("utf-8"))[1]\
                     .split(self.IMAGE_BREAKER[1].encode("utf-8"))[0]
+
                 # print(self.recv)
                 return

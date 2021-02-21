@@ -9,6 +9,8 @@ AUTHORIZED_FILES = [
     '..\\HTTP_Server\\wasm\\site\\Login\\index.js',
     "..\\HTTP_Server\\wasm\\site\\RemoteControl\\index.css",
     "..\\HTTP_Server\\wasm\\site\\RemoteControl\\index.js",
+    "..\\HTTP_Server\\wasm\\site\\RemoteControl\\on_start.js",
+    "..\\HTTP_Server\\wasm\\site\\RemoteControl\\image.js",
     '..\\HTTP_Server\\wasm\\site\\node_modules\\web-client\\web_client.js',
     '..\\HTTP_Server\\wasm\\site\\node_modules\\web-client\\web_client_bg.wasm',
 ]

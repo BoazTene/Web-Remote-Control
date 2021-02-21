@@ -1,8 +1,13 @@
 import math
+import multiprocessing
+import socket
 import threading
 from HttpApi.HostHandler.Images.ScreenShot import ScreenShot
 from HttpApi.HostHandler.Images.ConvertToBase64 import ConvertImageToBase64
 from time import sleep
+from multiprocessing import Queue, Process, reduction
+import pickle
+import time
 
 
 class SendImage(threading.Thread):
@@ -10,6 +15,7 @@ class SendImage(threading.Thread):
     This Class sends the screenshots to the client
     """
 
+    IMAGE_BREAKER = ['<start>', '<end>']
     MAX_IMAGE_DGRAM = 2 ** 16 - 64
 
     def __init__(self, session, address, image_breaker):
@@ -48,13 +54,20 @@ class SendImage(threading.Thread):
         """
         self.session.sendto(data, self.address)
 
+    # def __send_image(self, image):
+
     def send_image(self):
         """
         This function sends a whole image
         """
+
         self.screenshot.save()
 
+
         image = self.image_to_base64()
+
+        # print(image)
+
         number_of_chunks = self.number_of_chunks(image)
 
         array_pos_start = 0
@@ -62,11 +75,15 @@ class SendImage(threading.Thread):
         self.send_chunk(self.IMAGE_BREAKER[0].encode("utf-8"))
 
         while number_of_chunks:
+            # time.sleep(1)
+            start = time.time()
             array_pos_end = min(len(image), array_pos_start + self.MAX_IMAGE_DGRAM)
-
+            print("1: %s" % (time.time()- start))
+            start = time.time()
             self.send_chunk(image[array_pos_start:array_pos_end])
+            print("2: %s" % (time.time() - start))
 
-            sleep(0.00001)
+            # sleep(0.00001)
             array_pos_start = array_pos_end
 
             number_of_chunks -= 1
@@ -78,5 +95,9 @@ class SendImage(threading.Thread):
         This function is the main function.
         This function called when calling to .start()
         """
-        while True:
-            self.send_image()
+
+        try:
+            while True:
+                self.send_image()
+        except Exception:
+            return

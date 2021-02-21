@@ -9,15 +9,6 @@
     <link id="main-css" rel="stylesheet" href="Login/index.css" type="text/css">
   </head>
   <body>
-    <div id='nav'>
-      <ul>
-        <li><a href="/" >Home</a></li>
-        <li id="page" class="noselect"  >Login</li>
-        <li><a href="Host">Register</a></li>
-        <li><a href="Download">Download</a></li>
-      </ul> 
-    </div>
-
     <div class="slider loading">
       <div class="line"></div>
       <div class="subline inc"></div>
@@ -28,18 +19,26 @@
         <h id='headline'>Sign In</h>
         <div class='username'>
             <label for="username">UserName:</label>
-            <input type="text" id='username' autocomplete="off"> 
+            <input type="text" id='username' autocomplete="off" tabindex="1"> 
         </div>
 
         <div class='password'>
             <label for="password">Password:</label>
             <br>
+            <input type="password" id='password' autocomplete="off" tabindex="1">
             <button id="show-password"><i class="fa fa-eye"></i></button>
-
-            <input type="password" id='password' autocomplete="off">
         </div>
         <div id="message" class="message"></div>
-        <button class="sign-in">Sign In</button>
+        <button class="sign-in" tabindex="1">Sign In</button>
+    </div>
+
+    <div id='nav'>
+      <ul>
+        <li><a href="/" >Home</a></li>
+        <li id="page" class="noselect"  >Login</li>
+        <li><a href="Host">Register</a></li>
+        <li><a href="Download">Download</a></li>
+      </ul> 
     </div>
 
     <script src="Login/index.js" type="module"></script>

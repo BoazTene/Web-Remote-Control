@@ -10,7 +10,7 @@ class Main(threading.Thread):
     This class is the main handler for the host.
     """
 
-    def __init__(self, host_ip, port, username, password):
+    def __init__(self, host_ip, port, username, password, tcp=True):
         super(Main, self).__init__()
 
         self.host_ip = host_ip
@@ -28,6 +28,10 @@ class Main(threading.Thread):
 
         self.handler = False
 
+        self.is_close = False
+
+        self.tcp = tcp
+
     def tcp_handshake(self):
         """
         This class handles the tcp Handshake
@@ -37,7 +41,7 @@ class Main(threading.Thread):
         tcp = TCPHandshake.TCPHandshake(self.host_ip, self.port, self.username, self.password)
         result = tcp.run()
         self.tcp_session = tcp.session
-
+        print(result)
         return result
 
     def udp_handshake(self):
@@ -77,11 +81,14 @@ class Main(threading.Thread):
         self.handler = HostHandler(self.udp_session, self.udp_address)
         self.handler.start()
 
-        # keyboard_handler = KeyboardHandler(self.keyboard_session, self.keyboard_address)
-        # keyboard_handler.start()
+        keyboard_handler = KeyboardHandler(self.keyboard_session, self.keyboard_address)
+        keyboard_handler.start()
 
-        while self.handler.is_alive()  : #and keyboard_handler.is_alive()
+        while self.handler.is_alive() and keyboard_handler.is_alive():
             pass
+
+        keyboard_handler.close()
+        self.handler.close()
 
     def new_port(self):
         """
@@ -93,13 +100,29 @@ class Main(threading.Thread):
         new_port = NewPort.NewPort(self.udp_session, self.udp_address)
         return new_port.run()
 
+    def close(self):
+        """
+        Closes all open connections.
+        :return:
+        """
+        assert self.udp_session and self.tcp_session and self.keyboard_session
+
+        self.udp_session.close()
+        self.tcp_session.close()
+        self.keyboard_session.close()
+
+        self.is_close = True
+
     def run(self):
         """
         The main function
         :return:
         """
 
-        while self.tcp_handshake():
+        while not self.is_close and ((self.tcp and self.tcp_session) or self.tcp_handshake()):
+            print(self.is_close)
+            self.tcp = False
+
             print("da")
             self.keep_alive("Start-Remote-Control")
 

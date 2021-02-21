@@ -3,7 +3,7 @@ from HttpApi.ClientHandler.GetImage import GetImage
 from HttpApi.ClientHandler.Keyboard import Keyboard
 from HttpApi.ClientHandler.Mouse import Mouse
 from HttpApi.ClientHandler.HandShake.NewPort import NewPort
-
+import time
 import threading
 
 
@@ -30,6 +30,9 @@ class ClientHandler(threading.Thread):
         self.recv = []
 
         self.image = "None"
+
+        self.time = 0
+        self.images_num = 0
 
     def get_data(self):
         """
@@ -71,6 +74,9 @@ class ClientHandler(threading.Thread):
         self.image = get_image.image
         self.recv.extend(get_image.recv)
 
+    def close(self):
+        self.session.close()
+
     def check_alive(self, address):
         """
         This function call the check alive handler
@@ -106,20 +112,40 @@ class ClientHandler(threading.Thread):
         """
 
         # self.keyboard_session, self.keyboard_address = self.open_new_port()
+        starting_time = 0
+        num = 1
+        try:
+            while True:
+                data = self.get_data()
+                self.address = data[1]
+                start_breakers = self.find_start_breaker(data[0].decode('utf-8'))
+                # print(start_breakers)
+                # print(self.recv)
+                # try:
+                #     print("Fps: %s, Number of Images: %s, Time: %s" % (self.images_num / (time.perf_counter() - starting_time) , self.images_num, (time.perf_counter() - starting_time)))
+                # except ZeroDivisionError:
+                #     print("Fps: 0")
 
-        while True:
-            data = self.get_data()
-            self.address = data[1]
-            start_breakers = self.find_start_breaker(data[0].decode('utf-8'))
-            # print(start_breakers)
-            # print(self.recv)
-            for i in start_breakers, self.recv:
-                # print(i)
-                if self.IMAGE_BREAKER[0] in i:
-                    self.get_image(data[0])
-                elif self.ALIVE_CHECK_BREAKER[0] in i:
-                    self.check_alive(data[1])
+                for i in start_breakers, self.recv:
+                    # print(i)
+                    if self.IMAGE_BREAKER[0] in i:
 
-            self.recv = []
+                        self.get_image(data[0])
 
+                        if starting_time == 0:
+                            if num != 50:
+                                num += 1
+                            else:
+                                starting_time = time.perf_counter()
+                                self.images_num += 1
+                        else:
+                            # self.time += time.perf_counter() - starting_time
+                            self.images_num += 1
+
+                    elif self.ALIVE_CHECK_BREAKER[0] in i:
+                        self.check_alive(data[1])
+
+                self.recv = []
+        except Exception:
+            return
 

@@ -1,0 +1,11 @@
+C:\Users\user\Documents\Web-Remote-Control\Server\HTTP_Server\wasm\web-client\target\wasm32-unknown-unknown\release\deps\framed-39b05f6654a47fb7.rmeta: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\bytes.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\checksum.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\error.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\typed.rs
+
+C:\Users\user\Documents\Web-Remote-Control\Server\HTTP_Server\wasm\web-client\target\wasm32-unknown-unknown\release\deps\libframed-39b05f6654a47fb7.rlib: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\bytes.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\checksum.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\error.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\typed.rs
+
+C:\Users\user\Documents\Web-Remote-Control\Server\HTTP_Server\wasm\web-client\target\wasm32-unknown-unknown\release\deps\framed-39b05f6654a47fb7.d: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\bytes.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\checksum.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\error.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\typed.rs
+
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\lib.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\bytes.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\checksum.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\error.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\framed-0.4.3\src\typed.rs:

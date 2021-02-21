@@ -43,10 +43,10 @@ class KeyboardHandler(threading.Thread):
         This function is used to tell the check alive class that the client received to the ok message.
         :return:
         """
-
+        print("Keyboard recv")
         self.check_alive.recv_ok = True
 
-    def keyboard(self, data):
+    def keyboard(self, data, combination=True):
         """
         This function called each time the Host receives a key to press,
         in addition this function both get the key and press it.
@@ -56,19 +56,32 @@ class KeyboardHandler(threading.Thread):
         """
 
         keyboard = Keyboard(self.session, self.address, data)
-        keyboard.press_key()
+
+        try:
+            if keyboard.combination:
+                keyboard.key_combination(*keyboard.key.split("**"))
+            else:
+                keyboard.press_key(keyboard.key)
+        except Exception:
+            pass
+
+    def close(self):
+        self.session.close()
 
     def run(self):
         """
         This function listens to incoming keyboard messages and acting by the messages
         """
 
-        while True:
-            data = self.get_data()
-            start_breakers = self.find_start_breakers(data[0].decode("utf-8"))
-
-            for i in start_breakers:
-                if i == self.KEYBOARD_BREAKER[0]:
-                    self.keyboard(data[0].decode("utf-8"))
-                elif i == self.ALIVE_CHECK_BREAKER[0]:
-                    self.check_alive_recv()
+        try:
+            while True:
+                data = self.get_data()
+                start_breakers = self.find_start_breakers(data[0].decode("utf-8"))
+                print(data[0])
+                for i in start_breakers:
+                    if i == self.KEYBOARD_BREAKER[0]:
+                        self.keyboard(data[0].decode("utf-8"))
+                    elif i == self.ALIVE_CHECK_BREAKER[0]:
+                        self.check_alive_recv()
+        except Exception:
+            return

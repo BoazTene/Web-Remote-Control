@@ -1,0 +1,11 @@
+C:\Users\user\Documents\Web-Remote-Control\Server\HTTP_Server\wasm\web-client\target\wasm32-unknown-unknown\release\deps\rand_core-5ae926468642734a.rmeta: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\error.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\block.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\impls.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\le.rs
+
+C:\Users\user\Documents\Web-Remote-Control\Server\HTTP_Server\wasm\web-client\target\wasm32-unknown-unknown\release\deps\librand_core-5ae926468642734a.rlib: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\error.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\block.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\impls.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\le.rs
+
+C:\Users\user\Documents\Web-Remote-Control\Server\HTTP_Server\wasm\web-client\target\wasm32-unknown-unknown\release\deps\rand_core-5ae926468642734a.d: C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\lib.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\error.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\block.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\impls.rs C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\le.rs
+
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\lib.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\error.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\block.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\impls.rs:
+C:\Users\user\.cargo\registry\src\github.com-1ecc6299db9ec823\rand_core-0.4.2\src\le.rs:

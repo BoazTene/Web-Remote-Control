@@ -2,6 +2,7 @@ import socket
 from eventlet.timeout import Timeout
 # from HttpApi.HostHandler.Handler import HostHandler
 from time import sleep
+import time
 import threading
 
 
@@ -55,20 +56,20 @@ class CheckAlive(threading.Thread):
 
         while True:
             sleep(self.DELAY)
-            self.timeout = self.start_timeout()
-            try:
-                self.send_check_alive()
-                while True:
-                    if self.recv_ok:
-                        print("recv")
-                        self.recv_ok = False
-                        self.stop_timeout()
-                        break
-            except Exception as e:
-                print(e)
-                print("Disconnect")
-                self.stop_timeout()
+            start_time = time.time()
+
+            self.send_check_alive()
+            while time.time() - start_time < self.TIMEOUT:
+                if self.recv_ok:
+                    print("recv")
+                    self.recv_ok = False
+                    # self.stop_timeout()
+                    break
+            if self.recv_ok:
+                continue
+            else:
                 return
+
 
 
 

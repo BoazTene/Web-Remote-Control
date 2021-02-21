@@ -21,6 +21,7 @@ class Handler(BaseHTTPRequestHandler):
         GET(self, self.path, self.root_directory)
 
     def do_POST(self):
+        print(self.path)
         POST(self)
 
     def log_message(self, format, *args):

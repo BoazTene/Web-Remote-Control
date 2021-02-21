@@ -11,16 +11,16 @@ class GET:
         self.wfile = handler.wfile
         self.path = self.path = Path(path, root_directory=root_directory)
         self.root_directory = root_directory
-        try:
-            f = self.send_head(self.path)
-            if f:
-                try:
-                    self.copyfile(f, self.wfile)
-                finally:
-                    f.close()
+        # try:
+        f = self.send_head(self.path)
+        if f:
+            try:
+                self.copyfile(f, self.wfile)
+            finally:
+                f.close()
 
-        except Exception as e:
-            print("Error: ", e)
+        # except Exception as e:
+        #     print("Error: ", e)
 
     def response(self):
         self.handler.send_response(HTTPStatus.OK)
@@ -58,7 +58,7 @@ class GET:
 
         f = None
         if os.path.isdir(path.path) :
-            parts = urllib.parse.urlsplit(self.path)
+            parts = urllib.parse.urlsplit(self.path.path)
             if not parts.path.endswith('/'):
                 # Sends a forbidden error
                 self.send_response(HTTPStatus.FORBIDDEN)

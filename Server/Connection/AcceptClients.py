@@ -54,7 +54,6 @@ class Accept:
             self.c.send(b"Your UserName is taken please change it.")
             self.c.close()
             return
-
         self.clients.data.append([self.c, None])
         self.c.send(b"OK")
         print("Connected " + self.addr[0])
@@ -66,6 +65,7 @@ class Accept:
         """
 
         self.creds = self.creds.split(",")
+
         self.creds.pop(0)
 
         if Identification(self.creds, len(self.clients.data)).check_remote_client()[0]:

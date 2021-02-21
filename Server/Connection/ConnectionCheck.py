@@ -23,7 +23,6 @@ class ConnectionCheck:
         this class is used to connect to the database and save the data into self.data
         :return:
         """
-
         self.db = DataBase(r"C:\Users\user\Documents\RemoteControl\Server\pythonsqlite.db")
         self.data = self.db.get_data()
 

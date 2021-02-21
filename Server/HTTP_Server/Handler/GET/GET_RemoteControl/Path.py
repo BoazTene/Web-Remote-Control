@@ -14,11 +14,8 @@ class Path:
             '.h': 'text/plain',
         })
 
-
         self.path = path
-        self.root_directory = root_directory #"../Login"
-        print(self.path)
-        print(self.root_directory)
+        self.root_directory = root_directory
         self.root_dir()
 
         if self.path.split("/")[1] == "node_modules":
@@ -29,11 +26,11 @@ class Path:
             self.path = self.translate_path(self.path)
 
     def root_dir(self):
-        if str(self.remove_parameters()) == '/':
+        if str(self.remove_parameters()) == '/RemoteControl':
             try:
-                self.path = '/index.html?' +  self.path.split("?", 1)[1]
+                self.path = '/RemoteControl/index.html?' +  self.path.split("?", 1)[1]
             except IndexError:
-                self.path = '/index.html'
+                self.path = '/RemoteControl/index.html'
 
     def remove_parameters(self):
         return self.path.split("?", 1)[0].split("#", 1)[0]

@@ -4,6 +4,13 @@ import threading
 
 
 class KeyboardHandler(threading.Thread):
+    """
+        Some of the breakers can have special attributes.
+
+        keyboard:
+            <key-s>(h=t/f|c-=t/f)<key-e>
+
+    """
 
     IMAGE_BREAKER = ["<start>", "<end>"]
     ALIVE_CHECK_BREAKER = ["<check-alive>"]
@@ -17,17 +24,27 @@ class KeyboardHandler(threading.Thread):
         self.session = session
         self.address = address
 
-    def keyboard(self, key):
+    def keyboard(self, key, hold=False, combination=False):
         """
         This function called each time the Host receives a key to press,
         in addition this function both get the key and press it.
 
+        :param hold:
+        :param combination:
+        :param key:
         :param data:
         :return:
         """
 
         keyboard = Keyboard(self.session, self.address, key, self.KEYBOARD_BREAKER)
-        keyboard.send()
+        print(hold, combination)
+        if not combination:
+            keyboard.send_key_press()
+        else:
+            keyboard.send_combination()
+
+    def close(self):
+        self.session.close()
 
     def get_data(self):
         """
@@ -55,13 +72,15 @@ class KeyboardHandler(threading.Thread):
         """
        This function listens to incoming keyboard messages and acting by the messages
        """
+        try:
+            while True:
+                data = self.get_data()
+                start_breakers = self.find_start_breakers(data[0].decode("utf-8"))
 
-        while True:
-            data = self.get_data()
-            start_breakers = self.find_start_breakers(data[0].decode("utf-8"))
-
-            for i in start_breakers:
-                if i == self.KEYBOARD_BREAKER[0]:
-                    self.keyboard(data[0].decode("utf-8"))
-                elif i == self.ALIVE_CHECK_BREAKER[0]:
-                    self.check_alive(data[1])
+                for i in start_breakers:
+                    if i == self.KEYBOARD_BREAKER[0]:
+                        self.keyboard(data[0].decode("utf-8"))
+                    elif i == self.ALIVE_CHECK_BREAKER[0]:
+                        self.check_alive(data[1])
+        except Exception:
+            return

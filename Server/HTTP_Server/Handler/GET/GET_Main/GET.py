@@ -23,9 +23,8 @@ class GET:
                 finally:
                     f.close()
 
-        except Exception as e:
+        except EOFError as e:
             print("Error: ", e)
-
 
     def copyfile(self, source, outputfile):
         """Copy all data between two file objects.
@@ -62,10 +61,9 @@ class GET:
             self.end_headers()
             return None
 
-
         f = None
         if os.path.isdir(path.path) :
-            parts = urllib.parse.urlsplit(self.path)
+            parts = urllib.parse.urlsplit(self.path.path)
             if not parts.path.endswith('/'):
                 # Sends a forbidden error
                 self.send_response(HTTPStatus.FORBIDDEN)

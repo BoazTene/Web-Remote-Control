@@ -1,4 +1,4 @@
-import wasm, {host, get_wasm_memory_buffer_pointer, lahoh} from "../node_modules/web-client/web_client.js";
+import wasm, {host, get_wasm_memory_buffer_pointer} from "../node_modules/web-client/web_client.js";
 let module;
 
 function showPassword(){
@@ -75,19 +75,32 @@ class Register{
         var bufferPointer = get_wasm_memory_buffer_pointer();
 
         if (wasmMemory[bufferPointer] == 1) {
-
+            document.getElementsByClassName("box")[0].style.display = "none";
+            document.getElementsByClassName("slider")[0].style.display = "none";
+            document.getElementById("message").innerHTML = "<p1>You are Register.<br>Waiting for client to connect<p1><p1 class='slow'>...<p1>";
+            document.getElementById("page").style.display = "none";
+            document.getElementById("home-page").style.display = "inline";
+        } else if (wasmMemory[bufferPointer] == 2){
+            password.style.borderColor = 'red';
+            username.style.borderColor = 'red';
+            document.getElementById("fail-message").innerHTML = "<p1>The UserName or Password incorrect<p1>";
         } else {
-            document.getElementById("message").innerHTML = "<p1>The UserName or Password incorrect<p1>";
+            document.getElementById("fail-message").innerHTML = "<p1>Something went wrong...<p1>";
         }
     }
 
     start(){
+        document.getElementById("message").innerHTML = "";
+
         if (password.value != "" && username.value != "") {
              document.getElementsByClassName('loading')[0].style.display = "inline";
         } else {
             return
         }
         host(username.value, password.value);
+
+        window.addEventListener('onrequestend', this.requestEndHandler);
+        
        }
     
 }

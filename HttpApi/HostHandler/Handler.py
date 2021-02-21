@@ -55,17 +55,22 @@ class HostHandler(threading.Thread):
 
         self.check_alive.recv_ok = True
 
+    def close(self):
+        self.session.close()
+
     def run(self):
         """
         This function listens to incoming messages and acting by the messages
         """
 
-        while True:
-            data = self.get_data()
-            start_breakers = self.find_start_breaker(data[0].decode("utf-8"))
-            for i in start_breakers:
-                if i == self.MOUSE_BREAKER[0]:
-                    self.mouse(data[0].decode("utf-8"))
-                elif i == self.ALIVE_CHECK_BREAKER[0]:
-                    self.check_alive_recv()
-
+        try:
+            while True:
+                data = self.get_data()
+                start_breakers = self.find_start_breaker(data[0].decode("utf-8"))
+                for i in start_breakers:
+                    if i == self.MOUSE_BREAKER[0]:
+                        self.mouse(data[0].decode("utf-8"))
+                    elif i == self.ALIVE_CHECK_BREAKER[0]:
+                        self.check_alive_recv()
+        except Exception:
+            return

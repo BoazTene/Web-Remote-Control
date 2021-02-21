@@ -1,94 +1,147 @@
-import wasm, {get_image, send_key, keys, send_mouse_pos} from "../node_modules/web-client/web_client.js";
-let module;
+import wasm, {get_image, send_key, keys, send_mouse_pos, store_value_in_wasm_memory_buffer_index_zero, get_wasm_memory_buffer_pointer, close, Keyboard, web_socket} from "../node_modules/web-client/web_client.js";
+import {OnStart} from "../RemoteControl/on_start.js";
 
-const urlParams = new URLSearchParams(window.location.search);
+
+export {onWindowResize, keys, get_image, send_key};
+
+let keyboard;
+
+setInterval(function () {
+    // let key_queue_temp = key_queue.map((x) => x);
+    // for (let i = key_queue_temp.length; i > 0; i--) {
+    //     console.log(key_queue_temp)
+
+    //     Keyboard.press_key(key_queue_temp[i-1]);
+    //     key_queue.pop(key_queue.indexOf(key_queue[i-1]));
+    // }
+    timerId = undefined;
+    // key_queue = []
+    // console.log(key_queue)
+    // let wasmMemory = new Uint8Array(module.memory.buffer);
+    // var bufferPointer = get_wasm_memory_buffer_pointer();
+    // if (wasmMemory[bufferPointer] == 0) {
+    //     timerId = undefined;
+    // }
+}, 5)
+let module;
+let timerId;
+let key_queue = [];
+
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext("2d");
-console.log(urlParams.get("image"))
-var body = document.body
-var html = document.documentElement;
 
-
-async function load_module(){
-    console.log(wasm)
-    module = await wasm();
- 
-
-    document.getElementsByTagName('body')[0].style.visibility = "visible";
-    document.getElementsByClassName('loader')[0].style.visibility = "hidden";
-    document.getElementById('loader-text').style.visibility = "hidden";
-    onStart();
-
-    keys();
-}
-
-load_module()
-
-// canvas.addEventListener('mousemove', onMouseMove);
-// canvas.addEventListener('click', onMouseClicked);
-
-function onkeypress(event) {
-    console.log(event.key);
-    send_key(event.key);
-    event.preventDefault();
-    return false;  
-}
-
-
-// this funciton is used to draw an image on the canvas
-// the img_src value can be url to image http://..../img.png or local path or data url data://image/jpeg;base64,<data>
-function draw(event) {
-    
-    // console.log(event.detail);
-    var img_src = event.detail;
-    // try{
-    //     img_src = img_src.split("<start>")[1].split("<end>")[0]
-    // } catch {
-    //     console.log(img_src);
-    //     return
-    // }
-    img_src = "data:image/jpeg;base64," + img_src;
-    alert(img_src)
-    // console.log(img_src);
-    var ctx = document.getElementById('canvas').getContext('2d');
-    var img = new Image();
-    img.onload = function() {
-        console.log(Math.max( body.scrollHeight, body.offsetHeight, 
-            html.clientHeight, html.scrollHeight, html.offsetHeight ));
+new OnStart(canvas, ctx, wasm).start().then(m => {
+        module = m;
+        eventListeners();
+        let socket = new web_socket("ws://localhost:9898");
+        keyboard = new Keyboard();
+        // let socket = new web_socket("ws://127.0.0.1:1234");
+        // setTimeout(function() {
+        //     socket.send("hey Whats going on?");
+        //     socket.on_message();
+        //     eventListeners();
+        // }, 1000)
         
-        alert("Draw");
-        ctx.drawImage(img, 0, 0, canvas.width , canvas.height);
-    };
-    // console.log(img_src)
-    img.src = img_src;
+});
+
+
+/* Event listeners */
+
+function eventListeners() {
+    // canvas.addEventListener('mousemove', onMouseMove);
+    // canvas.addEventListener('click', onMouseClicked);
+    // event_test();
+    // document.addEventListener('keydown', onkeypress, { passive: false, once: false });
+    document.onkeydown = onKeyPress;
+    store_value_in_wasm_memory_buffer_index_zero(0);
+    // send_key('d');
 }
 
-window.addEventListener('keydown', onkeypress);
-// this funciton called every time the user move the mouse anywhere on the canvas
+/* Events */
+
+/**
+ * This function called each time the 'mousemove' event is triggered.
+ * 
+ * The function sends to the Http_api server the mouse x, y.
+ * 
+ * @param {event} event
+ */
 function onMouseMove(event){
     send_mouse_pos(event.clientX, event.clientY);
 }
 
-// this function is called every time the user click anywhere on the canvas
+/**
+ * This function called each time the 'keypress' event is triggered.
+ * 
+ * The function cancle all of the default shurtcut,
+ * The funciton sends to the Http_api the pressed key.
+ * 
+ * @param {event} event 
+ */
+function onKeyPress(event) {    
+        console.log(event.key)
+        console.log(Keyboard.press_key)
+        if (event.altKey == true || event.ctrlKey == true || event.shiftKey){
+            console.log("Paste")
+            let key = "";
+            if (event.altKey == true) key += "Alt**";
+            if (event.ctrlKey == true) key += "Control**";
+            if (event.shiftKey == true) key += "Shift**";
+            key += event.key;
+            timerId = throttleFunction(Keyboard.key_combination, 5, key, timerId);
+        } else {
+            timerId = throttleFunction(Keyboard.press_key, 5, event.key, timerId);
+        }
+        
+        event.preventDefault();
+
+    }
+
+    
+
+var  throttleFunction  =  function (func, delay, key, timerId) {
+    // If setTimeout is already scheduled, no need to do anything
+    console.log(timerId)
+	if (timerId) {
+        key_queue.push(key)
+		return
+	}
+
+	// Schedule a setTimeout after delay seconds
+	timerId  =  setTimeout(function () {
+        // for (let i = 0; i < key_queue.length; i++) if (key_queue.includes(key)) key_queue.pop(key_queue.indexOf(key));
+        console.log("Sending...")
+		func(key)
+		
+		// Once setTimeout function execution is finished, timerId = undefined so that in <br>
+		// the next scroll event function execution can be scheduled by the setTimeout
+		timerId  =  undefined;
+    }, delay)
+    
+    return timerId
+}
+
+/**
+ * This function called each time the 'mouseclick' event is triggered.
+ * 
+ * The function sends to the Http_api the mouse x, y + the mouse state 
+ * 
+ * @param {event} event 
+ */
 function onMouseClicked(event){
     module.get_image();
     console.log("Mouse cicked at x: " + event.clientX + " y: " + event.clientY);
 }
 
-// this function is called on start
-// this function fits the canvas size to the screen size
-function onStart() {
-    ctx.canvas.width  = window.innerWidth ;
-    ctx.canvas.height = window.innerHeight - 15 - ((window.innerHeight/100) * 7);
-    canvas.style.top = ((window.innerHeight/100) * 7) + "px";
+/**
+ * This function called each time the 'resize' event is triggered.
+ * 
+ * The function resizing the canvas to fit the new window size.
+ */
+function onWindowResize() {
     canvas.style.position = "relative";
-    window.addEventListener("newimage", draw)
-    
-    setInterval(function() {
-        get_image();
-        // src = "data:image/jpeg;base64," + src;
-        // console.log(src);
-        // draw(src);
-    }, 100)
+    ctx.canvas.width  = window.innerWidth;
+    ctx.canvas.height = window.innerHeight - 25 - ((window.innerHeight/100) * 7);
+    canvas.style.top = ((window.innerHeight/100) * 6) + "px";
 }

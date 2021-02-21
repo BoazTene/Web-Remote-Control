@@ -1,0 +1,18 @@
+Keyboard Long press using win32api
+
+class Keyboard
+
+fields:
+    Hold_keys: dic of all the keys the software need to hold.
+    example of the dic:
+        ['t': 0x54, ...]
+    The key is string of the key to old, and value is the keycode.
+
+    VK_CODE: dictionary of all key string to their keycode. 
+
+functions:
+
+
+
+prove of concept github project:
+    https://gist.github.com/chriskiehl/2906125

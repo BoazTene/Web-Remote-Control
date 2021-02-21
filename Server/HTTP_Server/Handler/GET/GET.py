@@ -11,19 +11,23 @@ class GET:
         self.handler = handler
         self.path = path
         self.root_directory = root_directory
-
         try:
+            if self.path.split("?")[0].split("#")[0] == "/":
+                GET_Main(handler, path, root_directory)
+                return
             if self.path.split("?")[0].split("#")[0] == "/Login":
                 GET_Login(handler, path, '../HTTP_Server/wasm/site')
                 return
             if self.path.split("?")[0].split("#")[0] == "/Host":
                 GET_Host(handler, path, '../HTTP_Server/wasm/site')
                 return
-            if list(self.path.split("/", 1)[1])[0] == "?" or list(self.path.split("/", 1)[1])[0] == "#":
+            if self.path.split("?")[0].split("#")[0] == "/RemoteControl":
+                remoteControl(handler, path, "../HTTP_Server/wasm/site")
+                return
                 access = Access(self.handler)
                 if access.check():
                     # remote control the user is authorized
-                    remoteControl(handler, path, "../HTTP_Server/wasm/site/RemoteControl")
+                    remoteControl(handler, path, "../HTTP_Server/wasm/site")
                     return
                 else:
                     # Login the user is unauthorized

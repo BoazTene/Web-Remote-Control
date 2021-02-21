@@ -1,9 +1,6 @@
 use wasm_bindgen::JsCast;
-use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
-use serde::{Deserialize, Serialize};
-use serde_json;
 
 pub struct Http{} 
 
@@ -35,6 +32,31 @@ impl Http{
 
         Ok(text)
     }
+
+    // post request
+    pub async fn post(self, url: &str) -> Result<String, js_sys::Promise> {
+        let mut opts = RequestInit::new();
+        
+        // opts.headers(&JsValue::from_str("Name: Gila"));
+        opts.method("POST");
+        opts.mode(RequestMode::Cors);
+
+        let request = Request::new_with_str_and_init(
+            url,
+            &opts,
+        )?;
+
+        let window = web_sys::window().unwrap();
+
+        let resp_value = JsFuture::from(window.fetch_with_request(&request)).await?;
+
+        let resp: Response = resp_value.dyn_into().unwrap();
+        
+        let text = JsFuture::from(resp.text()?).await?.as_string().unwrap();
+
+        Ok(text)
+    }
+
 
     // this function gets the result of the get function and convert it to String
     pub async fn to_string(resp: Result<String, js_sys::Promise>) -> String {

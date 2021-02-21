@@ -1,0 +1,22 @@
+Possible problems
+
+1. canvas randering is slow
+2. flask is slowing down
+3. the actuall key press
+
+Tests:
+
+Key press test
+
+Tuesday 11:37:15am 16 Feb 2021 - web key detect
+2021-02-16 11:37:15.468827 - python recv over flask key.
+
+Image fps Test:
+Fps: 3.451913346764574, Number of Images: 2860, Time(in seconds): 828.5260145000001
+
+Possible solutions:
+
+for problem number 3: use winapi to press - https://stackoverflow.com/questions/31713835/win32apis-keybd-event-function-problems
+
+render each image only once 
+

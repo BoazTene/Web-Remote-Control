@@ -6,6 +6,7 @@ import os
 from .Path import Path
 from .Permission import Permission
 
+
 class GET:
     def __init__(self, handler, path, root_directory):
         try:
@@ -63,7 +64,7 @@ class GET:
 
         f = None
         if os.path.isdir(path.path) :
-            parts = urllib.parse.urlsplit(self.path)
+            parts = urllib.parse.urlsplit(self.path.path)
             if not parts.path.endswith('/'):
                 # Sends a forbidden error
                 self.send_response(HTTPStatus.FORBIDDEN)

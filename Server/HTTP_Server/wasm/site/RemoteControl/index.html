@@ -4,14 +4,28 @@
     <meta charset="utf-8">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@900&display=swap" rel="stylesheet"> 
-    <link rel="stylesheet" href="http://localhost:5000/RemoteControl/index.css">
+    <link rel="stylesheet" href="/RemoteControl/index.css">
+
     <title>Web-Remote-Control</title>
   </head>
   <body scroll="no">
+
     <div class="loader"></div>
     <h1 id="loader-text">Loading...</h1>
-    <canvas id="canvas"></canvas>
-    <button id="log-out">Log Out</button>
+    <canvas id="canvas" ></canvas>
+
+    <div id='nav'>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="Login">Login</a></li>
+        <li><a href="Host">Register</a></li>
+        <li><a href="Download">Download</a></li>
+        <li><a href="#">Log Out</a></li>
+      </ul> 
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="*"></script>
     <script src="../RemoteControl/index.js" type="module"></script>
   </body>
 </html>

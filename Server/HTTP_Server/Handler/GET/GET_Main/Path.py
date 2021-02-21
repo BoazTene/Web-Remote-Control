@@ -30,7 +30,7 @@ class Path:
     def root_dir(self):
         if str(self.remove_parameters()) == '/':
             try:
-                self.path = '/index.html?' +  self.path.split("?", 1)[1]
+                self.path = '/index.html?' + self.path.split("?", 1)[1]
             except IndexError:
                 self.path = '/index.html'
 

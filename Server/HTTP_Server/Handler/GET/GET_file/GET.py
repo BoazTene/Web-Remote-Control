@@ -57,10 +57,10 @@ class GET:
 
         permission = Permission(path.remove_parameters())
 
-        if not permission.is_authorized():
-            self.send_error(HTTPStatus.FORBIDDEN, "Forbidden", explain="You don't have access to the requested file.")
-            self.end_headers()
-            return None
+        # if not permission.is_authorized():
+        #     self.send_error(HTTPStatus.FORBIDDEN, "Forbidden", explain="You don't have access to the requested file.")
+        #     self.end_headers()
+        #     return None
 
         f = None
         if os.path.isdir(path.path) :

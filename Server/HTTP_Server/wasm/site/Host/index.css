@@ -114,6 +114,71 @@ body {
     
 }   
 
+.slow {
+  display: inline-block;
+  vertical-align: bottom;
+  max-width: 0rem;
+  overflow: hidden;
+  text-align: center;
+  animation: slow 5s forwards 2s infinite ;
+}
+
+@keyframes slow {
+  0% {
+    max-width: 0rem;
+  }
+  13% {
+    max-width: 0rem;
+  }
+  14% {
+    max-width: 1rem
+  }
+  39% {
+    max-width: 1rem
+  }
+  40% {
+    max-width: 2rem;
+  }
+  79% {
+    max-width: 2rem;
+  }
+  80% {
+    max-width: 3rem;
+  }
+  100% {
+    max-width: 3rem;
+  }
+}
+
+#message {
+  position: absolute;
+  left: 25%;
+  top: 15%;
+  font-size: 50pt;
+
+
+  /* text-align: center; */
+
+  color: rgb(0, 0, 0);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+    /* border: 1px solid black; */
+    /* width: 70px; */
+    overflow: hidden;
+    white-space: nowrap
+}
+
+#fail-message {
+    position: absolute;
+    bottom: 27%;
+    left: 10%;
+
+    color:rgb(0, 0, 0);
+    font-family: "Heebo";
+    font-size: 130%;
+}
+
 .box .username input{
     width: 90%;
     height: 35px;

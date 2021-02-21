@@ -2,6 +2,7 @@ from HttpApi.ClientHandler.HandShake import TcpHandShake, UdpHandShake, NewPort
 from HttpApi.ClientHandler.Handler import ClientHandler
 from HttpApi.ClientHandler.KeyboardHandler import KeyboardHandler
 from HttpApi.ClientHandler.Handler import ClientHandler
+from HttpApi.WebSocket.Server import Server as WebSocketServer
 import threading
 import socket
 
@@ -42,6 +43,17 @@ class Main:
 
         return tcp_hand_shake.run()
 
+    def close(self):
+        """
+        Closes all open connections.
+        :return:
+        """
+        assert self.udp_session and self.tcp_session and self.keyboard_session
+
+        self.udp_session.close()
+        self.tcp_session.close()
+        self.keyboard_session.close()
+
     def udp_handshake(self, result):
         """
         This function is the main handler for the udp handshake
@@ -57,11 +69,16 @@ class Main:
         return udp.success
 
     def remote_control(self):
+        websocket_server = threading.Thread(target=WebSocketServer, args=(self,))
+        websocket_server.start()
+
+        # possible add here a wait for the client to connect
+
         self.image_handler = ClientHandler(self.udp_session, self.udp_address)
         self.image_handler.start()
 
-        # self.keyboard_handler = KeyboardHandler(self.keyboard_session, self.keyboard_address)
-        # self.keyboard_handler.start()
+        self.keyboard_handler = KeyboardHandler(self.keyboard_session, self.keyboard_address)
+        self.keyboard_handler.start()
 
     def new_port(self):
         new_port = NewPort(self.udp_session, self.udp_address)
