@@ -1,10 +1,17 @@
+import time
+
 from HttpApi.ClientHandler.HandShake import TcpHandShake, UdpHandShake, NewPort
 from HttpApi.ClientHandler.Handler import ClientHandler
 from HttpApi.ClientHandler.KeyboardHandler import KeyboardHandler
+from HttpApi.ClientHandler.MouseHandler import MouseHandler
 from HttpApi.ClientHandler.Handler import ClientHandler
 from HttpApi.WebSocket.Server import Server as WebSocketServer
 import threading
 import socket
+from multiprocessing import Process, Value, Array, Manager
+from multiprocessing import shared_memory
+from ctypes import c_wchar_p
+from multiprocessing.managers import SharedMemoryManager
 
 
 class Main:
@@ -28,7 +35,11 @@ class Main:
         self.keyboard_session = None
         self.keyboard_address = None
 
+        self.mouse_session = None
+        self.mouse_address = None
+
         self.keyboard_handler = None
+        self.mouse_handler = None
         self.image_handler = None
 
     def tcp_handshake(self):
@@ -72,10 +83,13 @@ class Main:
         websocket_server = threading.Thread(target=WebSocketServer, args=(self,))
         websocket_server.start()
 
-        # possible add here a wait for the client to connect
+        image_handler = ClientHandler(self.udp_session, self.udp_address)
+        image_handler.start()
 
-        self.image_handler = ClientHandler(self.udp_session, self.udp_address)
-        self.image_handler.start()
+        self.image_handler = image_handler
+
+        self.mouse_handler = MouseHandler(self.mouse_session, self.mouse_address)
+        self.mouse_handler.start()
 
         self.keyboard_handler = KeyboardHandler(self.keyboard_session, self.keyboard_address)
         self.keyboard_handler.start()
@@ -98,8 +112,11 @@ class Main:
             if self.udp_handshake(result):
                 print("port")
                 self.keyboard_session, self.keyboard_address = self.new_port()
+                self.mouse_session, self.mouse_address = self.new_port()
                 print(self.keyboard_session, self.keyboard_address)
+
                 self.remote_control()
+                # time.sleep(0.1)
                 return "True"
 
         return "False"

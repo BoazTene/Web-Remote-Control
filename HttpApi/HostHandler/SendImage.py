@@ -1,12 +1,13 @@
 import math
-import multiprocessing
-import socket
+# import multiprocessing
+# import socket
 import threading
 from HttpApi.HostHandler.Images.ScreenShot import ScreenShot
 from HttpApi.HostHandler.Images.ConvertToBase64 import ConvertImageToBase64
 from time import sleep
-from multiprocessing import Queue, Process, reduction
-import pickle
+# from multiprocessing import Queue, Process, reduction
+# import pickle
+# import zlib
 import time
 
 
@@ -54,19 +55,12 @@ class SendImage(threading.Thread):
         """
         self.session.sendto(data, self.address)
 
-    # def __send_image(self, image):
-
     def send_image(self):
         """
         This function sends a whole image
         """
-
         self.screenshot.save()
-
-
         image = self.image_to_base64()
-
-        # print(image)
 
         number_of_chunks = self.number_of_chunks(image)
 
@@ -75,15 +69,11 @@ class SendImage(threading.Thread):
         self.send_chunk(self.IMAGE_BREAKER[0].encode("utf-8"))
 
         while number_of_chunks:
-            # time.sleep(1)
-            start = time.time()
             array_pos_end = min(len(image), array_pos_start + self.MAX_IMAGE_DGRAM)
-            print("1: %s" % (time.time()- start))
-            start = time.time()
-            self.send_chunk(image[array_pos_start:array_pos_end])
-            print("2: %s" % (time.time() - start))
 
-            # sleep(0.00001)
+            self.send_chunk(image[array_pos_start:array_pos_end])
+
+            sleep(0.05)
             array_pos_start = array_pos_end
 
             number_of_chunks -= 1

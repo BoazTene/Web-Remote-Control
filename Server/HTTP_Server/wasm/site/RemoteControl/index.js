@@ -1,28 +1,32 @@
-import wasm, {get_image, send_key, keys, send_mouse_pos, store_value_in_wasm_memory_buffer_index_zero, get_wasm_memory_buffer_pointer, close, Keyboard, web_socket} from "../node_modules/web-client/web_client.js";
+import wasm, {get_image, send_key, keys, send_mouse_pos, store_value_in_wasm_memory_buffer_index_zero, get_wasm_memory_buffer_pointer, close, send_mouse, Keyboard, web_socket} from "../node_modules/web-client/web_client.js";
 import {OnStart} from "../RemoteControl/on_start.js";
 
 
 export {onWindowResize, keys, get_image, send_key};
 
 let keyboard;
+var offscreen;
+var gl;
+var last_x;
+var last_y;
 
-setInterval(function () {
-    // let key_queue_temp = key_queue.map((x) => x);
-    // for (let i = key_queue_temp.length; i > 0; i--) {
-    //     console.log(key_queue_temp)
+// setInterval(function () {
+//     // let key_queue_temp = key_queue.map((x) => x);
+//     // for (let i = key_queue_temp.length; i > 0; i--) {
+//     //     console.log(key_queue_temp)
 
-    //     Keyboard.press_key(key_queue_temp[i-1]);
-    //     key_queue.pop(key_queue.indexOf(key_queue[i-1]));
-    // }
-    timerId = undefined;
-    // key_queue = []
-    // console.log(key_queue)
-    // let wasmMemory = new Uint8Array(module.memory.buffer);
-    // var bufferPointer = get_wasm_memory_buffer_pointer();
-    // if (wasmMemory[bufferPointer] == 0) {
-    //     timerId = undefined;
-    // }
-}, 5)
+//     //     Keyboard.press_key(key_queue_temp[i-1]);
+//     //     key_queue.pop(key_queue.indexOf(key_queue[i-1]));
+//     // }
+//     timerId = undefined;
+//     // key_queue = []
+//     // console.log(key_queue)
+//     // let wasmMemory = new Uint8Array(module.memory.buffer);
+//     // var bufferPointer = get_wasm_memory_buffer_pointer();
+//     // if (wasmMemory[bufferPointer] == 0) {
+//     //     timerId = undefined;
+//     // }
+// }, 1000)
 let module;
 let timerId;
 let key_queue = [];
@@ -34,7 +38,7 @@ var ctx = canvas.getContext("2d");
 new OnStart(canvas, ctx, wasm).start().then(m => {
         module = m;
         eventListeners();
-        let socket = new web_socket("ws://localhost:9898");
+        // let socket = new web_socket("ws://localhost:9898");
         keyboard = new Keyboard();
         // let socket = new web_socket("ws://127.0.0.1:1234");
         // setTimeout(function() {
@@ -53,7 +57,28 @@ function eventListeners() {
     // canvas.addEventListener('click', onMouseClicked);
     // event_test();
     // document.addEventListener('keydown', onkeypress, { passive: false, once: false });
-    document.onkeydown = onKeyPress;
+    // document.onkeydown = onKeyPress;
+    $("body").keydown(function(e){
+        onKeyPress(e);
+    });
+
+    $("canvas").click(function(event) {
+      onMouseClicked(event);
+    });
+
+    console.log($("canvas"))
+    console.log(document.getElementsByTagName('canvas')[0]);
+
+    $("canvas").mousemove(function(event) {
+        onMouseMove(event);
+    });
+
+    document.addEventListener('wheel', event => {
+        onWheelScrolled(event);
+    })
+
+    $('canvas').on('contextmenu', event => event.preventDefault());
+
     store_value_in_wasm_memory_buffer_index_zero(0);
     // send_key('d');
 }
@@ -68,7 +93,28 @@ function eventListeners() {
  * @param {event} event
  */
 function onMouseMove(event){
-    send_mouse_pos(event.clientX, event.clientY);
+    event.preventDefault();
+
+    throttleFunction(send_mouse, 300, ((event.clientX+10)/canvas.width).toString(),((event.clientY-65)/canvas.height).toString(), 'n', "1");
+}
+
+/**
+ * This function called each time the 'mouseclick' event is triggered.
+ * 
+ * The function sends to the Http_api the mouse x, y + the mouse state 
+ * 
+ * @param {event} event 
+ */
+function onMouseClicked(event) {
+    event.preventDefault();
+    let button;
+
+
+    if (event.which == 1) button = 'l';
+    if (event.which == 2) button = 'm';
+    if (event.which == 3) button = 'r';
+
+    send_mouse(((event.clientX+10)/canvas.width).toString(), ((event.clientY-65)/canvas.height).toString() , button, "1");
 }
 
 /**
@@ -89,49 +135,18 @@ function onKeyPress(event) {
             if (event.ctrlKey == true) key += "Control**";
             if (event.shiftKey == true) key += "Shift**";
             key += event.key;
-            timerId = throttleFunction(Keyboard.key_combination, 5, key, timerId);
+            throttleFunction(Keyboard.key_combination, 5, key);
         } else {
-            timerId = throttleFunction(Keyboard.press_key, 5, event.key, timerId);
+             throttleFunction(Keyboard.press_key, 5, event.key);
+             console.log(timerId)
+
         }
         
         event.preventDefault();
-
-    }
-
-    
-
-var  throttleFunction  =  function (func, delay, key, timerId) {
-    // If setTimeout is already scheduled, no need to do anything
-    console.log(timerId)
-	if (timerId) {
-        key_queue.push(key)
-		return
-	}
-
-	// Schedule a setTimeout after delay seconds
-	timerId  =  setTimeout(function () {
-        // for (let i = 0; i < key_queue.length; i++) if (key_queue.includes(key)) key_queue.pop(key_queue.indexOf(key));
-        console.log("Sending...")
-		func(key)
-		
-		// Once setTimeout function execution is finished, timerId = undefined so that in <br>
-		// the next scroll event function execution can be scheduled by the setTimeout
-		timerId  =  undefined;
-    }, delay)
-    
-    return timerId
 }
 
-/**
- * This function called each time the 'mouseclick' event is triggered.
- * 
- * The function sends to the Http_api the mouse x, y + the mouse state 
- * 
- * @param {event} event 
- */
-function onMouseClicked(event){
-    module.get_image();
-    console.log("Mouse cicked at x: " + event.clientX + " y: " + event.clientY);
+function onWheelScrolled(event) {
+    send_mouse(((event.clientX+10)/canvas.width).toString(), ((event.clientY-65)/canvas.height).toString() , 's', (-event.deltaY).toString());
 }
 
 /**
@@ -144,4 +159,31 @@ function onWindowResize() {
     ctx.canvas.width  = window.innerWidth;
     ctx.canvas.height = window.innerHeight - 25 - ((window.innerHeight/100) * 7);
     canvas.style.top = ((window.innerHeight/100) * 6) + "px";
+}
+
+/**
+ * This function performs the throttling technique.
+ * 
+ * @param {function} func a function to call...
+ * @param {number} delay the delay between each call.
+ * @param  {...any} args additional args to pass to the function
+ */
+var  throttleFunction  =  function (func, delay, ...args) {
+    // If setTimeout is already scheduled, no need to do anything
+	if (timerId != undefined) {
+        // key_queue.push(key)
+		return 
+	}
+
+	// Schedule a setTimeout after delay seconds
+	timerId = setTimeout(function () {
+        console.log("Sending...")
+		func(...args)
+		
+		// Once setTimeout function execution is finished, timerId = undefined so that in <br>
+		// the next scroll event function execution can be scheduled by the setTimeout
+		timerId  =  undefined;
+    }, delay)
+    
+    return 
 }

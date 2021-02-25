@@ -5,6 +5,7 @@ export function keys(): number;
 export function test1(a: number): void;
 export function send_mouse_pos(a: number, b: number): number;
 export function send_key(a: number, b: number): number;
+export function send_mouse(a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number): number;
 export function get_image(): number;
 export function store_value_in_wasm_memory_buffer_index_zero(a: number): void;
 export function read_wasm_memory_buffer_and_return_index_one(): number;

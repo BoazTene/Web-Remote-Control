@@ -77,6 +77,15 @@ pub async fn send_key(mut key: String) {
 }
 
 #[wasm_bindgen]
+pub async fn send_mouse(x: String, y: String, click: String, scroll: String) {
+  // alert(&format!("http://localhost:1234/mouse?x={}&y={}&click={}", x, y, click));
+  let http = http::Http {};
+  // alert(&format!("http://localhost:1234/mouse?x={}&y={}&click={}&scroll={}", x, y, click, scroll));
+  http.get(&format!("http://localhost:1234/mouse?x={}&y={}&click={}&scroll={}", x, y, click, scroll)).await;
+}
+
+
+#[wasm_bindgen]
 pub async fn get_image() -> Result<bool, JsValue> {
     // This function gets from the http_api server the last image the host sent.
 

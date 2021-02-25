@@ -1,4 +1,6 @@
 # from HttpApi.self.Handler import self
+import time
+import zlib
 
 
 class GetImage:
@@ -30,6 +32,7 @@ class GetImage:
         data, addr = self.session.recvfrom(self.MAX_IMAGE_DGRAM)
 
         start_breakers = [breaker[0] for breaker in self.BREAKERS]
+
         self.recv.extend([breaker for breaker in start_breakers if breaker in data.decode("utf-8")])
 
         return data
@@ -52,14 +55,17 @@ class GetImage:
             self.image = self.image.split(self.IMAGE_BREAKER[0].encode("utf-8"))[1] \
                 .split(self.IMAGE_BREAKER[1].encode("utf-8"))[0]
             return
-
+        start = time.time()
+        # print(self.image)
         while True:
             data = self.get_chunk()
-            self.image += data
 
+            self.image += data
             if self.IMAGE_BREAKER[1] in data.decode('utf-8'):
                 self.image = self.image.split(self.IMAGE_BREAKER[0].encode("utf-8"))[1]\
                     .split(self.IMAGE_BREAKER[1].encode("utf-8"))[0]
-
+                # print("Shalkot: %s" % (time.time() - start))
                 # print(self.recv)
+                # print(self.image)
+
                 return

@@ -7,6 +7,7 @@ from Server.Connection.AcceptClients import Accept
 from Server.Connection.ConnectionCheck import ConnectionCheck
 from Server.Clients_Data import Clients
 from Server.HTTP_Server.Server import run
+from multiprocessing import Process
 
 
 class Main:
@@ -66,9 +67,10 @@ class Main:
 
         self.s.bind((self.host, self.port))
         self.s.listen(5)
-
-        web = threading.Thread(target=run, args=(self.WEB_PORT,))
+        web = Process(target=run, args=(self.WEB_PORT,))
         web.start()
+        # web = threading.Thread(target=run, args=(self.WEB_PORT,))
+        # web.start()
 
         accept = threading.Thread(target=self.accept)
         accept.start()

@@ -1,8 +1,11 @@
 from HttpApi.HostHandler.Handshake import TCPHandshake, UDPHandshake, NewPort
 from HttpApi.HostHandler.Handler import HostHandler
 from HttpApi.HostHandler.KeyboardHandler import KeyboardHandler
+from HttpApi.HostHandler.MouseHandler import MouseHandler
+
 import threading
 import socket
+import multiprocessing
 
 
 class Main(threading.Thread):
@@ -10,7 +13,7 @@ class Main(threading.Thread):
     This class is the main handler for the host.
     """
 
-    def __init__(self, host_ip, port, username, password, tcp=True):
+    def __init__(self, host_ip, port, username, password, **kwargs):
         super(Main, self).__init__()
 
         self.host_ip = host_ip
@@ -26,11 +29,17 @@ class Main(threading.Thread):
         self.keyboard_session = None
         self.keyboard_address = None
 
+        self.mouse_session = None
+        self.mouse_address = None
+
         self.handler = False
 
         self.is_close = False
 
-        self.tcp = tcp
+        if kwargs['tcp'] is not None:
+            self.tcp = kwargs['tcp']
+        else:
+            self.tcp = None
 
     def tcp_handshake(self):
         """
@@ -78,17 +87,23 @@ class Main(threading.Thread):
         :return:
         """
 
-        self.handler = HostHandler(self.udp_session, self.udp_address)
-        self.handler.start()
+        handler = HostHandler(self.udp_session, self.udp_address)
+        handler.start()
+        # handler.join()
+
+        mouse_handler = MouseHandler(self.mouse_session, self.mouse_address)
+        mouse_handler.start()
 
         keyboard_handler = KeyboardHandler(self.keyboard_session, self.keyboard_address)
         keyboard_handler.start()
 
-        while self.handler.is_alive() and keyboard_handler.is_alive():
+        self.keyboard_handler = keyboard_handler
+
+        while handler.is_alive() and keyboard_handler.is_alive():
             pass
 
         keyboard_handler.close()
-        self.handler.close()
+        handler.close()
 
     def new_port(self):
         """
@@ -107,6 +122,7 @@ class Main(threading.Thread):
         """
         assert self.udp_session and self.tcp_session and self.keyboard_session
 
+        self.keyboard_handler.close()
         self.udp_session.close()
         self.tcp_session.close()
         self.keyboard_session.close()
@@ -132,5 +148,8 @@ class Main(threading.Thread):
             print("Done")
 
             self.keyboard_session, self.keyboard_address = self.new_port()
+            self.mouse_session, self.mouse_address = self.new_port()
+            print(self.mouse_address)
 
             self.remote_control()
+            print("Disconnected")

@@ -13,10 +13,12 @@ import threading
 # from flask_socketio import SocketIO
 from HttpApi.ClientHandler.Main import Main as ClientMain
 from HttpApi.HostHandler.Main import Main
+from HttpApi.ClientHandler.Mouse import Mouse
 from datetime import datetime
 import logging
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
+from multiprocessing import Process
 
 
 class PortInUseError(Exception):
@@ -50,6 +52,7 @@ class Server:
         self.handler = None
         self.keyboard_handler = None
         self.main_handler = None
+        self.mouse_handler = None
 
         threading.Thread(target=self.thread).start()
 
@@ -70,10 +73,10 @@ class Server:
         :param password:
         :return:
         """
-        print("My name is Guy, Guy made is bug, It never happend before.")
         # try:
         handler = Main(self.HOST_IP, self.PORT, username, password, tcp=True)
         handler.tcp_handshake()
+
         handler.start()
 
         self.main_handler = handler
@@ -94,6 +97,7 @@ class Server:
         result = handler.run()
         self.main_handler = handler
         self.handler = handler.image_handler
+        self.mouse_handler = handler.mouse_handler
         self.keyboard_handler = handler.keyboard_handler
 
         return result
@@ -115,6 +119,7 @@ class Server:
             :return:
             """
             try:
+
                 return self.handler.image
             except Exception:
                 return 'None'
@@ -129,6 +134,7 @@ class Server:
             """
             username = request.args.get('username')
             password = request.args.get('password')
+
 
             return self.register(username, password)
 
@@ -171,7 +177,23 @@ class Server:
         @app.route("/mouse")
         @cross_origin()
         def mouse():
-            return "False"
+            x = float(request.args.get('x'))
+            y = float(request.args.get('y'))
+            click = request.args.get('click')
+            scroll = int(request.args.get('scroll'))
+            print(x, y, click, scroll)
+            self.mouse_handler.mouse(x, y, click, scroll)
+
+            # if click == 'n': # mouse only moves
+            #     Mouse(x, y).move_mouse()
+            # elif click == 'r': # right click
+            #     Mouse(x, y).right_button()
+            # elif click == 'l': # left click
+            #     Mouse(x, y).left_button()
+            # elif click == 'm': # middle click
+            #     Mouse(x, y).middle_button()
+
+            return "True"
 
         @app.route("/close")
         @cross_origin()
@@ -189,7 +211,7 @@ class Server:
 
                 return "True"
             except Exception as e:
-                print(e)
+                print(e, "196")
                 return "False"
 
         if self.is_port_in_use():

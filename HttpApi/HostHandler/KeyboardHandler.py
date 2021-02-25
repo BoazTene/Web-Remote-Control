@@ -82,6 +82,7 @@ class KeyboardHandler(threading.Thread):
                     if i == self.KEYBOARD_BREAKER[0]:
                         self.keyboard(data[0].decode("utf-8"))
                     elif i == self.ALIVE_CHECK_BREAKER[0]:
-                        self.check_alive_recv()
-        except Exception:
+                            self.check_alive_recv()
+        except Exception as e:
+            print(e)
             return

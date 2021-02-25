@@ -1,3 +1,5 @@
+import sys
+import traceback
 from io import BytesIO
 import d3dshot
 
@@ -27,9 +29,6 @@ class ScreenShot:
     def save(self):
         try:
             self.buffered = BytesIO()
-            self.d.get_latest_frame().save(self.buffered, format="JPEG", quality=70) # , quality=10
+            self.d.get_latest_frame().save(self.buffered, format="JPEG", quality=50)  # , quality=10
         except AttributeError:
-            print("NoneType error")
-
-
-
+            return

@@ -38,22 +38,38 @@ class OnStart {
             let module = await this.loadModule();
             
             onWindowResize();
+            // offscreen = new OffscreenCanvas(this.canvas__.width, this.canvas__.height);
+            // gl = offscreen.getContext('2d');
 
             window.addEventListener("resize", onWindowResize);
             
             let that = this;
 
             window.addEventListener("newimage", function (event) {
-
+                // alert("data:image/jpeg;base64," + event.detail);
+                
                 let drawImage = new DrawImage(that.canvas__, that.ctx__, event);
                 drawImage.drawImage();
+                // alert(1)
             });
             
-            setInterval(function() {
+            // setInterval(function() {
+            //     if (!document.hidden) {
+            //         // get_image();
+            //     }
+            // }, 300)
+
+            function image() {
                 if (!document.hidden) {
                     get_image();
+                    setTimeout(function() {
+                        requestAnimationFrame(image);
+                    }, 200);
                 }
-            }, 300)
+                
+            };
+
+            requestAnimationFrame(image)
 
             keys();
 

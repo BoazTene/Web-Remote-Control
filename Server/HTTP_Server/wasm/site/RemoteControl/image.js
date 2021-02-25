@@ -47,7 +47,6 @@ class DrawImage {
      */
     drawImage() {
         this.imageSrc = this.imageSrc;
-
         return new Promise(resolve => {
             let that = this;
 

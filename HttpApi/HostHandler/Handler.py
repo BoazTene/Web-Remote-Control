@@ -1,3 +1,5 @@
+import multiprocessing
+
 from HttpApi.HostHandler.CheckAlive import CheckAlive
 from HttpApi.HostHandler.Keyboard import Keyboard
 from HttpApi.HostHandler.Mouse import Mouse
@@ -5,7 +7,7 @@ from HttpApi.HostHandler.SendImage import SendImage
 import threading
 
 
-class HostHandler(threading.Thread):
+class HostHandler(multiprocessing.Process):
     """
     This class is the http api for the host.
     """
@@ -18,15 +20,11 @@ class HostHandler(threading.Thread):
     BREAKERS = [IMAGE_BREAKER, ALIVE_CHECK_BREAKER, KEYBOARD_BREAKER, MOUSE_BREAKER]
 
     def __init__(self, session, address):
-        super().__init__()
+        super(HostHandler, self).__init__()
+        # super().__init__()
         self.session = session
         self.address = address
 
-        self.images = SendImage(self.session, self.address, self.IMAGE_BREAKER)
-        self.check_alive = CheckAlive(self.session, self.address, self.ALIVE_CHECK_BREAKER)
-
-        self.check_alive.start()
-        self.images.start()
         print("STart")
 
     def get_data(self):
@@ -63,6 +61,12 @@ class HostHandler(threading.Thread):
         This function listens to incoming messages and acting by the messages
         """
 
+        self.images = SendImage(self.session, self.address, self.IMAGE_BREAKER)
+        self.check_alive = CheckAlive(self.session, self.address, self.ALIVE_CHECK_BREAKER)
+
+        self.check_alive.start()
+        self.images.start()
+
         try:
             while True:
                 data = self.get_data()
@@ -72,5 +76,6 @@ class HostHandler(threading.Thread):
                         self.mouse(data[0].decode("utf-8"))
                     elif i == self.ALIVE_CHECK_BREAKER[0]:
                         self.check_alive_recv()
-        except Exception:
+        except Exception as e:
+            print(e)
             return

@@ -20,6 +20,14 @@ export function send_mouse_pos(x: number, y: number): any;
 */
 export function send_key(key: string): any;
 /**
+* @param {string} x
+* @param {string} y
+* @param {string} click
+* @param {string} scroll
+* @returns {any}
+*/
+export function send_mouse(x: string, y: string, click: string, scroll: string): any;
+/**
 * @returns {any}
 */
 export function get_image(): any;
@@ -113,6 +121,7 @@ export interface InitOutput {
   readonly test1: (a: number) => void;
   readonly send_mouse_pos: (a: number, b: number) => number;
   readonly send_key: (a: number, b: number) => number;
+  readonly send_mouse: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => number;
   readonly get_image: () => number;
   readonly store_value_in_wasm_memory_buffer_index_zero: (a: number) => void;
   readonly read_wasm_memory_buffer_and_return_index_one: () => number;

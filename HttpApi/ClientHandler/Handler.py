@@ -5,6 +5,7 @@ from HttpApi.ClientHandler.Mouse import Mouse
 from HttpApi.ClientHandler.HandShake.NewPort import NewPort
 import time
 import threading
+import multiprocessing
 
 
 class ClientHandler(threading.Thread):
@@ -20,7 +21,7 @@ class ClientHandler(threading.Thread):
     BREAKERS = [IMAGE_BREAKER, ALIVE_CHECK_BREAKER, KEYBOARD_BREAKER, MOUSE_BREAKER]
 
     def __init__(self, session, address):
-        super().__init__()
+        super(ClientHandler, self).__init__()
         self.address = address
         self.session = session
 
@@ -30,6 +31,7 @@ class ClientHandler(threading.Thread):
         self.recv = []
 
         self.image = "None"
+        # self.image.value = "N"
 
         self.time = 0
         self.images_num = 0
@@ -72,6 +74,7 @@ class ClientHandler(threading.Thread):
         get_image = GetImage(self.session, self.address, data, self.BREAKERS, self.MAX_IMAGE_DGRAM)
         get_image.run()
         self.image = get_image.image
+        # print(self.image.value[4:])
         self.recv.extend(get_image.recv)
 
     def close(self):
@@ -114,38 +117,40 @@ class ClientHandler(threading.Thread):
         # self.keyboard_session, self.keyboard_address = self.open_new_port()
         starting_time = 0
         num = 1
-        try:
-            while True:
-                data = self.get_data()
-                self.address = data[1]
-                start_breakers = self.find_start_breaker(data[0].decode('utf-8'))
-                # print(start_breakers)
-                # print(self.recv)
-                # try:
-                #     print("Fps: %s, Number of Images: %s, Time: %s" % (self.images_num / (time.perf_counter() - starting_time) , self.images_num, (time.perf_counter() - starting_time)))
-                # except ZeroDivisionError:
-                #     print("Fps: 0")
+        print("asfasdf")
+        # try:
+        while True:
+            data = self.get_data()
+            self.address = data[1]
+            start_breakers = self.find_start_breaker(data[0].decode('utf-8'))
+            # print(start_breakers)
+            # print(self.recv)
+            # try:
+            #     print("Fps: %s, Number of Images: %s, Time: %s" % (self.images_num / (time.perf_counter() - starting_time) , self.images_num, (time.perf_counter() - starting_time)))
+            # except ZeroDivisionError:
+            #     print("Fps: 0")
 
-                for i in start_breakers, self.recv:
-                    # print(i)
-                    if self.IMAGE_BREAKER[0] in i:
+            for i in start_breakers, self.recv:
+                # print(i)
+                if self.IMAGE_BREAKER[0] in i:
 
-                        self.get_image(data[0])
+                    self.get_image(data[0])
 
-                        if starting_time == 0:
-                            if num != 50:
-                                num += 1
-                            else:
-                                starting_time = time.perf_counter()
-                                self.images_num += 1
+                    if starting_time == 0:
+                        if num != 50:
+                            num += 1
                         else:
-                            # self.time += time.perf_counter() - starting_time
+                            starting_time = time.perf_counter()
                             self.images_num += 1
+                    else:
+                        # self.time += time.perf_counter() - starting_time
+                        self.images_num += 1
 
-                    elif self.ALIVE_CHECK_BREAKER[0] in i:
-                        self.check_alive(data[1])
+                elif self.ALIVE_CHECK_BREAKER[0] in i:
+                    self.check_alive(data[1])
 
-                self.recv = []
-        except Exception:
-            return
+            self.recv = []
+        # except Exception as e:
+        #     print(e)
+        #     return
 
